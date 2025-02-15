@@ -4,6 +4,8 @@ import com.github.buoyy.buoyyecon.commands.MainCommand;
 import com.github.buoyy.buoyyecon.commands.SetCommand;
 import com.github.buoyy.buoyyecon.commands.ViewCommand;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
+
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -25,6 +27,7 @@ public final class BuoyyEcon extends JavaPlugin {
             return;
         }
         registerCommands();
+        registerEventListeners();
         getLogger().info("Vault economy hooked successfully!");
     }
 
@@ -44,6 +47,10 @@ public final class BuoyyEcon extends JavaPlugin {
         handler = new EconHandler();
     }
 
+    private void registerEventListeners() {
+        getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
+    }
+
     private void registerCommands() {
         MainCommand main = new MainCommand();
         main.registerSubCommand("set", new SetCommand());
@@ -55,7 +62,7 @@ public final class BuoyyEcon extends JavaPlugin {
     public static BuoyyEcon getPlugin() {
         return plugin;
     }
-    public static Economy getEconomy() {
+    public static EconHandler getEconomy() {
         return handler;
     }
 }

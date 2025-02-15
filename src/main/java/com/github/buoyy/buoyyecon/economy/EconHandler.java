@@ -3,6 +3,7 @@ package com.github.buoyy.buoyyecon.economy;
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.OfflinePlayer;
 
 import java.util.*;
@@ -33,7 +34,7 @@ public class EconHandler implements Economy {
 
     @Override
     public String format(double amount) {
-        return amount + " " + ((int) amount == 1 ? currencyNameSingular() : currencyNamePlural());
+        return (((int) amount) + " " + ((int) amount == 1 ? currencyNameSingular() : currencyNamePlural()));
     }
 
     @Override
@@ -59,19 +60,14 @@ public class EconHandler implements Economy {
     }
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-        if (amount < 0)
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
-        if (getBalance(player) < amount)
+        if (amount > getBalance(player)) {
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
-        bal.put(player.getUniqueId(), getBalance(player) - amount);
-        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
+        }
+        return setBalance(player, getBalance(player) - amount);
     }
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        if (amount < 0)
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
-        bal.put(player.getUniqueId(), getBalance(player) + amount);
-        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
+        return setBalance(player, getBalance(player) + amount);
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
@@ -81,7 +77,13 @@ public class EconHandler implements Economy {
         }
         return false;
     }
-
+    public EconomyResponse setBalance(OfflinePlayer player, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
+        }
+        bal.put(player.getUniqueId(), amount);
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
+    }
 // ----------------------------- WORLD SPECIFIC METHODS: NO NEED! ---------------------------------------------------------
 
     @Override
