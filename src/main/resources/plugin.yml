@@ -4,3 +4,7 @@ main: com.github.buoyy.buoyyecon.BuoyyEcon
 depend: [Vault]
 api-version: '1.18'
 load: STARTUP
+commands:
+  econ:
+    description: Main command
+    usage: /econ <add/remove/view/set>

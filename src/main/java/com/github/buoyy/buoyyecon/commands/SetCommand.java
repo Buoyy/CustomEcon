@@ -16,23 +16,28 @@ public class SetCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED + "Incomplete command");
             return true;
         }
-        Player target = Bukkit.getOfflinePlayer(args[0]).getPlayer();
-        double amount = Double.parseDouble(args[1]);
-        if (econ.getBalance(target) < amount) {
+        Player target = Bukkit.getOfflinePlayer(args[1]).getPlayer();
+        double amount = Double.parseDouble(args[2]);
+        if (!econ.has(target, amount)) {
             EconomyResponse response = econ.depositPlayer(target, amount - econ.getBalance(target));
             if (response.transactionSuccess()) {
                 sender.sendMessage(ChatColor.AQUA+"Successfully set " + ChatColor.AQUA + target.getName() +
-                        "'s balance to " + ChatColor.GOLD + econ.format(amount));
-                target.sendMessage(ChatColor.AQUA+"Your balance was set to " + ChatColor.GOLD + econ.format(amount));
+                        "'s balance to " + ChatColor.GOLD + econ.format(response.balance));
+                target.sendMessage(ChatColor.AQUA+"Your balance was set to " + ChatColor.GOLD + econ.format(response.balance));
             } else {
                 sender.sendMessage(ChatColor.RED+"There was an error: "+response.errorMessage);
             }
             return true;
         }
-        if (econ.getBalance(target) > amount) {
-            EconomyResponse response = econ.withdrawPlayer(target, econ.getBalance(target) - amount);
-
-        }
+        
+        EconomyResponse response = econ.withdrawPlayer(target, econ.getBalance(target) - amount);
+        if (response.transactionSuccess()) {
+            sender.sendMessage(ChatColor.AQUA+"Successfully set " + ChatColor.AQUA + target.getName() +
+                    "'s balance to " + ChatColor.GOLD + econ.format(response.balance));
+            target.sendMessage(ChatColor.AQUA+"Your balance was set to " + ChatColor.GOLD + econ.format(response.balance));
+        } else {
+            sender.sendMessage(ChatColor.RED+"There was an error: "+response.errorMessage);
+         }
         return true;
     }
 }

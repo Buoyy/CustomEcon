@@ -1,5 +1,8 @@
 package com.github.buoyy.buoyyecon;
 
+import com.github.buoyy.buoyyecon.commands.MainCommand;
+import com.github.buoyy.buoyyecon.commands.SetCommand;
+import com.github.buoyy.buoyyecon.commands.ViewCommand;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -21,6 +24,7 @@ public final class BuoyyEcon extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        registerCommands();
         getLogger().info("Vault economy hooked successfully!");
     }
 
@@ -38,6 +42,13 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         handler = new EconHandler();
+    }
+
+    private void registerCommands() {
+        MainCommand main = new MainCommand();
+        main.registerSubCommand("set", new SetCommand());
+        main.registerSubCommand("view", new ViewCommand());
+        getCommand("econ").setExecutor(main);
     }
 
     // You guessed it.
