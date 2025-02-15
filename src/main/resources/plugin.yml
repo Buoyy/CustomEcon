@@ -1,0 +1,6 @@
+name: BuoyyEcon
+version: '1.0'
+main: com.github.buoyy.buoyyecon.BuoyyEcon
+depend: [Vault]
+api-version: '1.18'
+load: STARTUP
