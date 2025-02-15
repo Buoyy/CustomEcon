@@ -51,7 +51,7 @@ public class EconHandler implements Economy {
     }
     @Override
     public double getBalance(OfflinePlayer player) {
-        return bal.get(player.getUniqueId());
+        return bal.getOrDefault(player.getUniqueId(), 0.0);
     }
     @Override
     public boolean has(OfflinePlayer player, double amount) {
