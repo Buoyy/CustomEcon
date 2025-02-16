@@ -31,7 +31,7 @@ public class CustomYAML {
     }
 
     private void setup(String name) {
-        file = new File(Bukkit.getServer().getPluginManager().getPlugin("DTMBridge").getDataFolder(), name + ".yml");
+        file = new File(Bukkit.getServer().getPluginManager().getPlugin("BuoyyEcon").getDataFolder(), name + ".yml");
         if (!file.exists()) {
             try {
                 file.createNewFile();
