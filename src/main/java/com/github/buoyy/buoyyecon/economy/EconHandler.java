@@ -63,7 +63,7 @@ public class EconHandler implements Economy {
         int amount = 0;
         createPlayerAccount(player);
         for (ItemStack i : bal.get(player.getUniqueId()).getContents()) {
-            if (i.getType() == Material.DIAMOND) amount += i.getAmount();
+            if (i != null && i.getType() == Material.DIAMOND) amount += i.getAmount();
         }
         return (double) amount;
     }
