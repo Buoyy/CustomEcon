@@ -2,12 +2,10 @@ package com.github.buoyy.buoyyecon;
 
 import com.github.buoyy.buoyyecon.commands.*;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
-import com.github.buoyy.buoyyecon.files.CustomYAML;
 import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,7 +15,6 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static EconHandler handler;
     private static BuoyyEcon plugin;
-    private static CustomYAML balances;
 
     @Override
     public void onEnable() {
@@ -51,7 +48,6 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         handler = new EconHandler();
-        balances = new CustomYAML("balances");
     }
 
     private void registerEventListeners() {
@@ -64,6 +60,7 @@ public final class BuoyyEcon extends JavaPlugin {
         main.registerSubCommand("view", new ViewCommand());
         main.registerSubCommand("deposit", new DepositCommand());
         main.registerSubCommand("withdraw", new WithdrawCommand());
+        main.registerSubCommand("open", new OpenCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }

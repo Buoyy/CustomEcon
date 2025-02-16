@@ -10,7 +10,6 @@ import com.github.buoyy.buoyyecon.economy.EconHandler;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
