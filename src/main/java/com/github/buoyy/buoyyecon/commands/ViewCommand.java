@@ -6,24 +6,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.economy.EconHandler;
 
 public class ViewCommand implements SubCommand {
-
+    private final EconHandler econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        
-        if (args.length < 2) {
-            if (sender instanceof Player player) {
-                player.sendMessage(ChatColor.GREEN+"Your current balance is: "+ChatColor.GOLD+BuoyyEcon.getEconomy().getBalance(player));
-            }
-            else {
-                sender.sendMessage(ChatColor.RED+"No balance for server console.");
-            }
+        Player target = (args.length < 2 ? ((Player) sender) : Bukkit.getOfflinePlayer(args[1]).getPlayer());
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED+"No such player exists/has ever joined the server.");
             return true;
         }
-        Player target = Bukkit.getOfflinePlayer(args[1]).getPlayer();
-        sender.sendMessage(ChatColor.AQUA+" "+target.getName()+ChatColor.GREEN+" has "+BuoyyEcon.getEconomy().format(BuoyyEcon.getEconomy().getBalance(target)));
-
+        econ.createPlayerAccount(target);
+        sender.sendMessage(ChatColor. AQUA + target.getName() + "'s" + 
+                        ChatColor.GREEN + " balance is: " +
+                        ChatColor.GOLD + econ.formattedBalance(target));
         return true;
     }
 }

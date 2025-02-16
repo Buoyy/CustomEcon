@@ -52,7 +52,7 @@ public class EconHandler implements Economy {
     }
     @Override
     public double getBalance(OfflinePlayer player) {
-        return bal.getOrDefault(player.getUniqueId(), 0.0);
+        return bal.get(player.getUniqueId());
     }
     @Override
     public boolean has(OfflinePlayer player, double amount) {
@@ -71,11 +71,14 @@ public class EconHandler implements Economy {
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
-        if (!bal.containsKey(player.getUniqueId())) {
+        if (!hasAccount(player)) {
             bal.put(player.getUniqueId(), 0.0);
             return true;
         }
         return false;
+    }
+    public String formattedBalance(OfflinePlayer player) {
+        return format(getBalance(player));
     }
     public EconomyResponse setBalance(OfflinePlayer player, double amount) {
         if (amount < 0) {
