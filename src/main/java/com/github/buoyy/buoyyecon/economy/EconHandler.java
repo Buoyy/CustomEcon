@@ -6,7 +6,8 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.OfflinePlayer;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class EconHandler implements Economy {
 
