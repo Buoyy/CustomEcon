@@ -77,6 +77,7 @@ public class EconHandler implements Economy {
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
         if (amount > getBalance(player))
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
+        createPlayerAccount(player);
         bal.get(player.getUniqueId()).removeItem(new ItemStack(Material.DIAMOND, (int) amount));
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
@@ -84,6 +85,7 @@ public class EconHandler implements Economy {
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
         if (amount < 0)
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
+        createPlayerAccount(player);
         bal.get(player.getUniqueId()).addItem(new ItemStack(Material.DIAMOND, (int) amount));
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
@@ -102,6 +104,7 @@ public class EconHandler implements Economy {
         if (amount < 0) {
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
         }
+        createPlayerAccount(player);
         bal.get(player.getUniqueId()).addItem(new ItemStack(Material.DIAMOND, (int) amount));
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
