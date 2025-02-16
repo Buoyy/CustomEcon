@@ -61,6 +61,7 @@ public class EconHandler implements Economy {
     @Override
     public double getBalance(OfflinePlayer player) {
         int amount = 0;
+        createPlayerAccount(player);
         for (ItemStack i : bal.get(player.getUniqueId()).getContents()) {
             if (i.getType() == Material.DIAMOND) amount += i.getAmount();
         }
