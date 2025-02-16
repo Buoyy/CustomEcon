@@ -1,47 +1,42 @@
 package com.github.buoyy.buoyyecon.commands;
 
+import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.economy.EconHandler;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.economy.EconHandler;
-
-import net.milkbowl.vault.economy.EconomyResponse;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SetCommand implements SubCommand {
-
+public class WithdrawCommand implements SubCommand {
     private final EconHandler econ = BuoyyEcon.getEconomy();
-
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED+"Incomplete command!");
+            sender.sendMessage(ChatColor.RED + "Incomplete command!");
             return true;
         }
         Player target = Bukkit.getOfflinePlayer(args[1]).getPlayer();
         if (target == null) {
-            sender.sendMessage(ChatColor.RED+"No such player exists/has ever joined the server.");
+            sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
         }
         double amount = Double.parseDouble(args[2]);
         if (Double.isNaN(amount)) {
-            sender.sendMessage(ChatColor.RED+"Amount must be a number!");
+            sender.sendMessage(ChatColor.RED + "Amount must be a number!");
             return true;
         }
-        EconomyResponse response = econ.setBalance(target, amount);
+        EconomyResponse response = econ.withdrawPlayer(target, amount);
         if (response.transactionSuccess()) {
-            sender.sendMessage(ChatColor.AQUA+target.getName()+"'s"+ChatColor.GREEN+" balance was set to "
-                            +ChatColor.GOLD+econ.formattedBalance(target));
-            target.sendMessage(ChatColor.GREEN+"Your balance was set to "
-                    +ChatColor.GOLD+econ.formattedBalance(target));
+            sender.sendMessage(ChatColor.GOLD+econ.format(response.amount)+ChatColor.GREEN+
+                    " were withdrawn from "+ChatColor.AQUA+target.getName()+ChatColor.GREEN+"'s balance.");
+            target.sendMessage(ChatColor.GOLD+econ.format(response.amount)+ChatColor.GREEN+
+                    " were withdrawn from your balance.");
         } else {
-            sender.sendMessage(ChatColor.RED+"Error!: "+ChatColor.DARK_RED+response.errorMessage);
+            sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + response.errorMessage);
         }
         return true;
     }

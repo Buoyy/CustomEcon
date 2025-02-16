@@ -7,6 +7,9 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
+import java.util.UUID;
+import java.util.Collections;
+import java.util.List;
 import java.util.HashMap;
 
 public class EconHandler implements Economy {
@@ -61,14 +64,19 @@ public class EconHandler implements Economy {
     }
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-        if (amount > getBalance(player)) {
+        if (amount < 0)
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
+        if (amount > getBalance(player))
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
-        }
-        return setBalance(player, getBalance(player) - amount);
+        bal.put(player.getUniqueId(), getBalance(player) - amount);
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        return setBalance(player, getBalance(player) + amount);
+        if (amount < 0)
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
+        bal.put(player.getUniqueId(), getBalance(player) + amount);
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {

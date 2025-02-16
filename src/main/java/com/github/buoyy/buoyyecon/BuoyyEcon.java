@@ -1,23 +1,29 @@
 package com.github.buoyy.buoyyecon;
 
-import com.github.buoyy.buoyyecon.commands.MainCommand;
-import com.github.buoyy.buoyyecon.commands.SetCommand;
-import com.github.buoyy.buoyyecon.commands.ViewCommand;
+import com.github.buoyy.buoyyecon.commands.*;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.files.CustomYAML;
 import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public final class BuoyyEcon extends JavaPlugin {
 
     private static EconHandler handler;
     private static BuoyyEcon plugin;
+    private static CustomYAML balances;
 
     @Override
     public void onEnable() {
+
+        saveDefaultConfig();
+
         initiateObjects();
 
         // Don't move forward in case Vault isn't installed.
@@ -45,6 +51,7 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         handler = new EconHandler();
+        balances = new CustomYAML("balances");
     }
 
     private void registerEventListeners() {
@@ -55,14 +62,13 @@ public final class BuoyyEcon extends JavaPlugin {
         MainCommand main = new MainCommand();
         main.registerSubCommand("set", new SetCommand());
         main.registerSubCommand("view", new ViewCommand());
-        getCommand("econ").setExecutor(main);
+        main.registerSubCommand("deposit", new DepositCommand());
+        main.registerSubCommand("withdraw", new WithdrawCommand());
+        Objects.requireNonNull(getCommand("econ")).setExecutor(main);
+        Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }
 
     // You guessed it.
-    public static BuoyyEcon getPlugin() {
-        return plugin;
-    }
-    public static EconHandler getEconomy() {
-        return handler;
-    }
+    public static BuoyyEcon getPlugin() { return plugin; }
+    public static EconHandler getEconomy() { return handler; }
 }
