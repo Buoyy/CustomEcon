@@ -48,39 +48,32 @@ public class EconHandler implements Economy {
     public String currencyNameSingular() {
         return "Diamond";
     }
+
     @Override
     public boolean hasAccount(OfflinePlayer player) {
         return manager.hasAccount(player);
     }
+
     @Override
     public double getBalance(OfflinePlayer player) {
-        return (double) manager.getBalance(player);
+        return manager.getBalance(player);
     }
+
     @Override
     public boolean has(OfflinePlayer player, double amount) {
         return getBalance(player) >= amount;
     }
+
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-        return manager.withdraw(player, (int) amount);
-    }
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) { return manager.withdraw(player, (int) amount); }
+
     @Override
-    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        return manager.deposit(player, (int) amount);
-    }
+    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) { return manager.deposit(player, (int) amount); }
+
+    // Will not be using this
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
         return manager.createAccount(player);
-    }
-    public String formattedBalance(OfflinePlayer player) {
-        return format(getBalance(player));
-    }
-    public EconomyResponse setBalance(OfflinePlayer player, double amount) {
-        if (amount < 0) {
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
-        }
-        manager.setBalance(player, (int) amount);
-        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
     }
 // ----------------------------- WORLD SPECIFIC METHODS: NO NEED! ---------------------------------------------------------
 

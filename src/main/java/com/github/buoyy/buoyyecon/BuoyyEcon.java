@@ -7,10 +7,14 @@ import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
 
@@ -63,6 +67,7 @@ public final class BuoyyEcon extends JavaPlugin {
         main.registerSubCommand("view", new ViewCommand());
         main.registerSubCommand("deposit", new DepositCommand());
         main.registerSubCommand("withdraw", new WithdrawCommand());
+        main.registerSubCommand("list-players", new ListPlayersCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }
@@ -71,4 +76,13 @@ public final class BuoyyEcon extends JavaPlugin {
     public static BuoyyEcon getPlugin() { return plugin; }
     public static EconHandler getEconomy() { return handler; }
     public static CustomYAML getDataFile() { return dataFile; }
+
+    // Get the list of players enrolled in the data file.
+    public static List<OfflinePlayer> getPlayers() {
+        List<OfflinePlayer> list = new ArrayList<>();
+        for (String i : dataFile.getConfig().getKeys(false)) {
+            list.add(Bukkit.getOfflinePlayer(UUID.fromString(i)));
+        }
+        return list;
+    }
 }

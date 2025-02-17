@@ -17,13 +17,14 @@ public class DataStorageManager {
         return dataFile.getConfig().contains(player.getUniqueId().toString());
     }
 
-    // Self explanatory
+    // Self-explanatory
     public int getBalance(OfflinePlayer player) {
-        return dataFile.getConfig().getInt(player.getUniqueId()+".balance", 0);
+        createAccount(player);
+        return dataFile.getConfig().getInt(player.getUniqueId()+".balance");
     }
 
-    // Set the amount and don't forget to save! This method is pretty useful.
-    public void setBalance(OfflinePlayer player, int amount) {
+    // Set the amount and don't forget to save! This private method is pretty useful.
+    private void setBalance(OfflinePlayer player, int amount) {
         dataFile.getConfig().set(player.getUniqueId()+".balance", amount);
         dataFile.save();
     }
@@ -56,6 +57,8 @@ public class DataStorageManager {
     public boolean createAccount(OfflinePlayer player) {
         if (hasAccount(player)) return false;
         setBalance(player, 0);
+        BuoyyEcon.getPlayers().add(player);
         return true;
     }
+
 }

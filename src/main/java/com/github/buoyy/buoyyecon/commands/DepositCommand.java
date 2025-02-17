@@ -3,13 +3,13 @@ package com.github.buoyy.buoyyecon.commands;
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class DepositCommand implements SubCommand {
     private final EconHandler econ = BuoyyEcon.getEconomy();
@@ -19,8 +19,11 @@ public class DepositCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED + "Incomplete command!");
             return true;
         }
-        Player target = Bukkit.getOfflinePlayer(args[1]).getPlayer();
-        if (target == null) {
+        OfflinePlayer target = BuoyyEcon.getPlayers().stream()
+                .filter(p -> Objects.equals(p.getName(), args[1]))
+                .findFirst()
+                .orElse(null);
+        if (target == null || !target.hasPlayedBefore()) {
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
         }
@@ -33,7 +36,8 @@ public class DepositCommand implements SubCommand {
         if (response.transactionSuccess()) {
             sender.sendMessage(ChatColor.GOLD+econ.format(response.amount)+ChatColor.GREEN+
                     " were added to "+ChatColor.AQUA+target.getName()+ChatColor.GREEN+"'s balance.");
-            target.sendMessage(ChatColor.GOLD+econ.format(response.amount)+ChatColor.GREEN+
+            if (target.isOnline())
+                Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GOLD+econ.format(response.amount)+ChatColor.GREEN+
                     " were added to your balance.");
         } else {
             sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + response.errorMessage);

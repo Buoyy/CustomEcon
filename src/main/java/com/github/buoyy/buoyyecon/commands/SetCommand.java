@@ -1,9 +1,8 @@
 package com.github.buoyy.buoyyecon.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
@@ -12,6 +11,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SetCommand implements SubCommand {
 
@@ -20,28 +20,34 @@ public class SetCommand implements SubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED+"Incomplete command!");
+            sender.sendMessage(ChatColor.RED + "Incomplete command!");
             return true;
         }
-        Player target = Bukkit.getOfflinePlayer(args[1]).getPlayer();
-        if (target == null) {
-            sender.sendMessage(ChatColor.RED+"No such player exists/has ever joined the server.");
+        OfflinePlayer target = BuoyyEcon.getPlayers().stream()
+                .filter(p -> Objects.equals(p.getName(), args[1]))
+                .findFirst()
+                .orElse(null);
+        if (target == null || !target.hasPlayedBefore()) {
+            sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
         }
         double amount = Double.parseDouble(args[2]);
         if (Double.isNaN(amount)) {
-            sender.sendMessage(ChatColor.RED+"Amount must be a number!");
+            sender.sendMessage(ChatColor.RED + "Amount must be a number!");
             return true;
         }
-        EconomyResponse response = econ.setBalance(target, amount);
-        if (response.transactionSuccess()) {
-            sender.sendMessage(ChatColor.AQUA+target.getName()+"'s"+ChatColor.GREEN+" balance was set to "
-                            +ChatColor.GOLD+econ.formattedBalance(target));
-            target.sendMessage(ChatColor.GREEN+"Your balance was set to "
-                    +ChatColor.GOLD+econ.formattedBalance(target));
-        } else {
-            sender.sendMessage(ChatColor.RED+"Error!: "+ChatColor.DARK_RED+response.errorMessage);
+        EconomyResponse response = ((amount < econ.getBalance(target)) ?
+                econ.withdrawPlayer(target, econ.getBalance(target) - amount) :
+                econ.depositPlayer(target, amount - econ.getBalance(target)));
+        if (!response.transactionSuccess()) {
+            sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + response.errorMessage);
+            return true;
         }
+        sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
+                ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+        if (target.isOnline())
+            Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
+                    + ChatColor.GOLD + econ.format(econ.getBalance(target)));
         return true;
     }
 
