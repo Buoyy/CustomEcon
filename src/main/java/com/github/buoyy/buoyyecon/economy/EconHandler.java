@@ -1,24 +1,18 @@
 package com.github.buoyy.buoyyecon.economy;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.Collections;
 import java.util.List;
-import java.util.HashMap;
 
 public class EconHandler implements Economy {
 
-    private final Map<UUID, Inventory> bal = new HashMap<>();
+    private final DataStorageManager manager = new DataStorageManager();
 
     @Override
     public boolean isEnabled() {
@@ -56,16 +50,11 @@ public class EconHandler implements Economy {
     }
     @Override
     public boolean hasAccount(OfflinePlayer player) {
-        return bal.containsKey(player.getUniqueId());
+        return manager.hasAccount(player);
     }
     @Override
     public double getBalance(OfflinePlayer player) {
-        int amount = 0;
-        createPlayerAccount(player);
-        for (ItemStack i : bal.get(player.getUniqueId()).getContents()) {
-            if (i != null && i.getType() == Material.DIAMOND) amount += i.getAmount();
-        }
-        return (double) amount;
+        return (double) manager.getBalance(player);
     }
     @Override
     public boolean has(OfflinePlayer player, double amount) {
@@ -73,29 +62,15 @@ public class EconHandler implements Economy {
     }
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-        if (amount < 0)
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
-        if (amount > getBalance(player))
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
-        createPlayerAccount(player);
-        bal.get(player.getUniqueId()).removeItem(new ItemStack(Material.DIAMOND, (int) amount));
-        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
+        return manager.withdraw(player, (int) amount);
     }
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        if (amount < 0)
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
-        createPlayerAccount(player);
-        bal.get(player.getUniqueId()).addItem(new ItemStack(Material.DIAMOND, (int) amount));
-        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
+        return manager.deposit(player, (int) amount);
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
-        if (!hasAccount(player)) {
-            bal.put(player.getUniqueId(), Bukkit.createInventory(player.getPlayer(), 36));
-            return true;
-        }
-        return false;
+        return manager.createAccount(player);
     }
     public String formattedBalance(OfflinePlayer player) {
         return format(getBalance(player));
@@ -104,12 +79,8 @@ public class EconHandler implements Economy {
         if (amount < 0) {
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Negative amount");
         }
-        createPlayerAccount(player);
-        bal.get(player.getUniqueId()).addItem(new ItemStack(Material.DIAMOND, (int) amount));
+        manager.setBalance(player, (int) amount);
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Successful operation");
-    }
-    public Inventory getInventory(OfflinePlayer player) {
-        return bal.get(player.getUniqueId());
     }
 // ----------------------------- WORLD SPECIFIC METHODS: NO NEED! ---------------------------------------------------------
 

@@ -2,6 +2,7 @@ package com.github.buoyy.buoyyecon;
 
 import com.github.buoyy.buoyyecon.commands.*;
 import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.files.CustomYAML;
 import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
 
 import net.milkbowl.vault.economy.Economy;
@@ -15,6 +16,7 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static EconHandler handler;
     private static BuoyyEcon plugin;
+    private static CustomYAML dataFile;
 
     @Override
     public void onEnable() {
@@ -47,6 +49,7 @@ public final class BuoyyEcon extends JavaPlugin {
     // This is for initiating all needed objects excluding main command
     private void initiateObjects() {
         plugin = this;
+        dataFile = new CustomYAML("accounts");
         handler = new EconHandler();
     }
 
@@ -60,7 +63,6 @@ public final class BuoyyEcon extends JavaPlugin {
         main.registerSubCommand("view", new ViewCommand());
         main.registerSubCommand("deposit", new DepositCommand());
         main.registerSubCommand("withdraw", new WithdrawCommand());
-        main.registerSubCommand("open", new OpenCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }
@@ -68,4 +70,5 @@ public final class BuoyyEcon extends JavaPlugin {
     // You guessed it.
     public static BuoyyEcon getPlugin() { return plugin; }
     public static EconHandler getEconomy() { return handler; }
+    public static CustomYAML getDataFile() { return dataFile; }
 }
