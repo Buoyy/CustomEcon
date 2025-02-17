@@ -6,13 +6,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.economy.VaultEconomy;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ViewCommand implements SubCommand {
-    private final EconHandler econ = BuoyyEcon.getEconomy();
+    private final VaultEconomy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player) && args.length < 2) {

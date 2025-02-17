@@ -1,7 +1,7 @@
 package com.github.buoyy.buoyyecon.commands;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.economy.VaultEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class WithdrawCommand implements SubCommand {
-    private final EconHandler econ = BuoyyEcon.getEconomy();
+    private final VaultEconomy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {

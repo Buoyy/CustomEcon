@@ -9,7 +9,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.List;
 
-public class EconHandler implements Economy {
+public class VaultEconomy implements Economy {
 
     private final DataStorageManager manager = new DataStorageManager();
 

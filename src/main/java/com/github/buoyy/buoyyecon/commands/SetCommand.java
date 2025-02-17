@@ -5,7 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.economy.VaultEconomy;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class SetCommand implements SubCommand {
 
-    private final EconHandler econ = BuoyyEcon.getEconomy();
+    private final VaultEconomy econ = BuoyyEcon.getEconomy();
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {

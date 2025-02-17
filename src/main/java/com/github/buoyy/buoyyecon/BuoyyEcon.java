@@ -1,13 +1,14 @@
 package com.github.buoyy.buoyyecon;
 
 import com.github.buoyy.buoyyecon.commands.*;
-import com.github.buoyy.buoyyecon.economy.EconHandler;
+import com.github.buoyy.buoyyecon.economy.VaultEconomy;
 import com.github.buoyy.buoyyecon.files.CustomYAML;
 import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
 
-    private static EconHandler handler;
+    private static VaultEconomy econ;
     private static BuoyyEcon plugin;
     private static CustomYAML dataFile;
     private static final Set<OfflinePlayer> players = new HashSet<>();
@@ -41,13 +42,25 @@ public final class BuoyyEcon extends JavaPlugin {
         getLogger().info("Vault economy hooked successfully!");
     }
 
+    @Override
+    public void onDisable() {
+        getLogger().info("Plugin is shutting down!");
+        getServer().getScheduler().cancelTasks(this);
+        HandlerList.unregisterAll(this);
+        getServer().getServicesManager().unregister(Economy.class, econ);
+        saveConfig();
+        dataFile.save();
+        players.clear();
+        
+    }
+
     // Set up the economy from the EconHandler class
     private boolean setupEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             getLogger().severe("This is BAD! Vault was not found!");
             return false;
         }
-        getServer().getServicesManager().register(Economy.class, handler, this, ServicePriority.Highest);
+        getServer().getServicesManager().register(Economy.class, econ, this, ServicePriority.Highest);
         return true;
     }
 
@@ -55,7 +68,7 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         dataFile = new CustomYAML("accounts");
-        handler = new EconHandler();
+        econ = new VaultEconomy();
         updatePlayersSet();
     }
 
@@ -81,7 +94,7 @@ public final class BuoyyEcon extends JavaPlugin {
 
     // You guessed it.
     public static BuoyyEcon getPlugin() { return plugin; }
-    public static EconHandler getEconomy() { return handler; }
+    public static VaultEconomy getEconomy() { return econ; }
     public static CustomYAML getDataFile() { return dataFile; }
     public static Set<OfflinePlayer> getPlayers() { return players; }
 }
