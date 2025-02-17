@@ -11,9 +11,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
@@ -21,6 +21,7 @@ public final class BuoyyEcon extends JavaPlugin {
     private static EconHandler handler;
     private static BuoyyEcon plugin;
     private static CustomYAML dataFile;
+    private static final Set<OfflinePlayer> players = new HashSet<>();
 
     @Override
     public void onEnable() {
@@ -55,6 +56,7 @@ public final class BuoyyEcon extends JavaPlugin {
         plugin = this;
         dataFile = new CustomYAML("accounts");
         handler = new EconHandler();
+        updatePlayersSet();
     }
 
     private void registerEventListeners() {
@@ -72,17 +74,14 @@ public final class BuoyyEcon extends JavaPlugin {
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }
 
+    public static void updatePlayersSet() {
+        for (String uuid : dataFile.getConfig().getKeys(false))
+            players.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+    }
+
     // You guessed it.
     public static BuoyyEcon getPlugin() { return plugin; }
     public static EconHandler getEconomy() { return handler; }
     public static CustomYAML getDataFile() { return dataFile; }
-
-    // Get the list of players enrolled in the data file.
-    public static List<OfflinePlayer> getPlayers() {
-        List<OfflinePlayer> list = new ArrayList<>();
-        for (String i : dataFile.getConfig().getKeys(false)) {
-            list.add(Bukkit.getOfflinePlayer(UUID.fromString(i)));
-        }
-        return list;
-    }
+    public static Set<OfflinePlayer> getPlayers() { return players; }
 }

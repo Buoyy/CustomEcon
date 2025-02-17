@@ -53,11 +53,10 @@ public class DataStorageManager {
                             EconomyResponse.ResponseType.SUCCESS, "");
     }
 
-    // I'm not really sure if this method is needed, but wrapper needs it. 
     public boolean createAccount(OfflinePlayer player) {
         if (hasAccount(player)) return false;
         setBalance(player, 0);
-        BuoyyEcon.getPlayers().add(player);
+        BuoyyEcon.updatePlayersSet();
         return true;
     }
 

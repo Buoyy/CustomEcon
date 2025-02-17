@@ -7,7 +7,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.OfflinePlayer;
 
-import java.util.Collections;
 import java.util.List;
 
 public class EconHandler implements Economy {
@@ -70,11 +69,8 @@ public class EconHandler implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) { return manager.deposit(player, (int) amount); }
 
-    // Will not be using this
     @Override
-    public boolean createPlayerAccount(OfflinePlayer player) {
-        return manager.createAccount(player);
-    }
+    public boolean createPlayerAccount(OfflinePlayer player) { return manager.createAccount(player); }
 // ----------------------------- WORLD SPECIFIC METHODS: NO NEED! ---------------------------------------------------------
 
     @Override
@@ -221,7 +217,7 @@ public class EconHandler implements Economy {
 
     @Override
     public List<String> getBanks() {
-        return Collections.emptyList();
+        return List.of();
     }
 
 

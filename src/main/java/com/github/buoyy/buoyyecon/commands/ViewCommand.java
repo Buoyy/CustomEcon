@@ -19,10 +19,10 @@ public class ViewCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED+"Balance command is not available for server console.");
             return true;
         }
-        OfflinePlayer target = args.length < 2 ? (Player) sender : BuoyyEcon.getPlayers().stream()
+        OfflinePlayer target = ((args.length < 2) ? ((Player) sender) : (BuoyyEcon.getPlayers().stream()
                 .filter(p -> Objects.equals(p.getName(), args[1]))
                 .findFirst()
-                .orElse(null);
+                .orElse(null)));
         if (target == null || !target.hasPlayedBefore()) {
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
