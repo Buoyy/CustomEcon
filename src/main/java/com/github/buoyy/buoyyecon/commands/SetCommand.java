@@ -17,34 +17,34 @@ public class SetCommand implements SubCommand {
 
     private final EconomyManager econ = BuoyyEcon.getEconomy();
 
-    @Override @SuppressWarnings("deprecation")
+    @Override
+    @SuppressWarnings("deprecation")
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Incomplete command!");
             return true;
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
-        if (!target.hasPlayedBefore()) {
+        if (econ.hasAccount(target)) {
+            float amount = Float.parseFloat(args[2]);
+            if (Float.isNaN(amount)) {
+                sender.sendMessage(ChatColor.RED + "Amount must be a number!");
+                return true;
+            }
+            EconomyAction action = ((amount < econ.getBalance(target)) ?
+                    econ.withdraw(target, econ.getBalance(target) - amount) :
+                    econ.deposit(target, amount - econ.getBalance(target)));
+            if (!action.isSuccessful()) {
+                sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + action.getMessage());
+            } else {
+                sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
+                        ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+                if (target.isOnline())
+                    Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
+                            + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+            }
+        } else
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
-            return true;
-        }
-        float amount = Float.parseFloat(args[2]);
-        if (Float.isNaN(amount)) {
-            sender.sendMessage(ChatColor.RED + "Amount must be a number!");
-            return true;
-        }
-        EconomyAction action = ((amount < econ.getBalance(target)) ?
-                econ.withdraw(target, econ.getBalance(target) - amount) :
-                econ.deposit(target, amount - econ.getBalance(target)));
-        if (!action.isSuccessful()) {
-            sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + action.getMessage());
-        } else {
-            sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
-                    ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
-            if (target.isOnline())
-                Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
-                        + ChatColor.GOLD + econ.format(econ.getBalance(target)));
-        }
         return true;
     }
 

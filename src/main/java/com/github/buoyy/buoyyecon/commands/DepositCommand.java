@@ -22,25 +22,24 @@ public class DepositCommand implements SubCommand {
             return true;
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
-        if (!target.hasPlayedBefore()) {
+        if (econ.hasAccount(target)) {
+            float amount = Float.parseFloat(args[2]);
+            if (Float.isNaN(amount)) {
+                sender.sendMessage(ChatColor.RED + "Amount must be a number!");
+                return true;
+            }
+            EconomyAction action = econ.deposit(target, amount);
+            if (action.isSuccessful()) {
+                sender.sendMessage(ChatColor.GOLD + econ.format(action.getAmount()) + ChatColor.GREEN +
+                        " were added to " + ChatColor.AQUA + target.getName() + ChatColor.GREEN + "'s balance.");
+                if (target.isOnline())
+                    Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GOLD + econ.format(action.getAmount()) + ChatColor.GREEN +
+                            " were added to your balance.");
+            } else {
+                sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + action.getMessage());
+            }
+        } else
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
-            return true;
-        }
-        float amount = Float.parseFloat(args[2]);
-        if (Float.isNaN(amount)) {
-            sender.sendMessage(ChatColor.RED + "Amount must be a number!");
-            return true;
-        }
-        EconomyAction action = econ.deposit(target, amount);
-        if (action.isSuccessful()) {
-            sender.sendMessage(ChatColor.GOLD+econ.format(action.getAmount())+ChatColor.GREEN+
-                    " were added to "+ChatColor.AQUA+target.getName()+ChatColor.GREEN+"'s balance.");
-            if (target.isOnline())
-                Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GOLD + econ.format(action.getAmount()) + ChatColor.GREEN +
-                        " were added to your balance.");
-        } else {
-            sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + action.getMessage());
-        }
         return true;
     }
 
