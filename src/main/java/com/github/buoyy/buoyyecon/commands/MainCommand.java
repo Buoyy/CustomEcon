@@ -20,8 +20,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         subs.put(name.toLowerCase(), command);
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    @Override @SuppressWarnings("deprecation")
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.GREEN + "Usage: /econ <deposit/withdraw/view/set>");
             return true;
@@ -35,7 +35,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         List<String> tabs;
         if (args.length == 1) {
             tabs = subs.keySet().stream().toList();
