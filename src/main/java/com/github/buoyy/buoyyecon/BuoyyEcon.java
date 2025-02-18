@@ -15,15 +15,10 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static BuoyyEcon plugin;
     private static CustomYAML dataFile;
-    private static final EconomyManager econ = new EconomyManager();
-
-    public static EconomyManager getEconomy() {
-        return econ;
-    }
+    private static EconomyManager econ;
 
     @Override
     public void onEnable() {
-
         saveDefaultConfig();
         initiateObjects();
         registerCommands();
@@ -44,6 +39,7 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         dataFile = new CustomYAML("accounts");
+        econ = new EconomyManager();
     }
 
     private void registerEventListeners() {
@@ -61,6 +57,7 @@ public final class BuoyyEcon extends JavaPlugin {
     }
 
     // You guessed it.
+    public static EconomyManager getEconomy() { return econ; }
     public static BuoyyEcon getPlugin() { return plugin; }
     public static CustomYAML getDataFile() { return dataFile; }
 }

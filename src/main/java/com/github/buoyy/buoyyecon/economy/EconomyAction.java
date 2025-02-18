@@ -1,6 +1,7 @@
 package com.github.buoyy.buoyyecon.economy;
 
 // Type info: 0 for failure, 1 for success, -1 for no implementation
+@SuppressWarnings("unused")
 public class EconomyAction {
     private final float amount, balance;
     private final boolean success;
