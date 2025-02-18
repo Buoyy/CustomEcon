@@ -23,7 +23,7 @@ public class WithdrawCommand implements SubCommand {
                 .filter(p -> Objects.equals(p.getName(), args[1]))
                 .findFirst()
                 .orElse(null);
-        if (target == null || !target.hasPlayedBefore()) {
+        if (target == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
         }

@@ -88,8 +88,8 @@ public final class BuoyyEcon extends JavaPlugin {
     }
 
     public static void updatePlayersSet() {
-        for (String uuid : dataFile.getConfig().getKeys(false))
-            players.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+        dataFile.getConfig().getKeys(false)
+                .forEach(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
     }
 
     // You guessed it.

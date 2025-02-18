@@ -27,7 +27,7 @@ public class SetCommand implements SubCommand {
                 .filter(p -> Objects.equals(p.getName(), args[1]))
                 .findFirst()
                 .orElse(null);
-        if (target == null || !target.hasPlayedBefore()) {
+        if (target == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
             return true;
         }
@@ -41,13 +41,13 @@ public class SetCommand implements SubCommand {
                 econ.depositPlayer(target, amount - econ.getBalance(target)));
         if (!response.transactionSuccess()) {
             sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + response.errorMessage);
-            return true;
+        } else {
+            sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
+                    ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+            if (target.isOnline())
+                Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
+                        + ChatColor.GOLD + econ.format(econ.getBalance(target)));
         }
-        sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
-                ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
-        if (target.isOnline())
-            Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
-                    + ChatColor.GOLD + econ.format(econ.getBalance(target)));
         return true;
     }
 
