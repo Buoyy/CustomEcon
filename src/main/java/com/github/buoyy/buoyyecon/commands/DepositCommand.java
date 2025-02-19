@@ -1,7 +1,7 @@
 package com.github.buoyy.buoyyecon.commands;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.economy.EconomyAction;
+import com.github.buoyy.buoyyecon.economy.Transaction;
 import com.github.buoyy.buoyyecon.economy.EconomyManager;
 
 import org.bukkit.Bukkit;
@@ -28,15 +28,15 @@ public class DepositCommand implements SubCommand {
                 sender.sendMessage(ChatColor.RED + "Amount must be a number!");
                 return true;
             }
-            EconomyAction action = econ.deposit(target, amount);
-            if (action.isSuccessful()) {
-                sender.sendMessage(ChatColor.GOLD + econ.format(action.getAmount()) + ChatColor.GREEN +
+            Transaction deposit = econ.deposit(target, amount);
+            if (deposit.isSuccessful()) {
+                sender.sendMessage(ChatColor.GOLD + econ.format(deposit.getAmount()) + ChatColor.GREEN +
                         " were added to " + ChatColor.AQUA + target.getName() + ChatColor.GREEN + "'s balance.");
                 if (target.isOnline())
-                    Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GOLD + econ.format(action.getAmount()) + ChatColor.GREEN +
+                    Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GOLD + econ.format(deposit.getAmount()) + ChatColor.GREEN +
                             " were added to your balance.");
             } else {
-                sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + action.getMessage());
+                sender.sendMessage(ChatColor.RED + "Error!: " + ChatColor.DARK_RED + deposit.getMessage());
             }
         } else
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");

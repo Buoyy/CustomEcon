@@ -2,7 +2,7 @@ package com.github.buoyy.buoyyecon.economy;
 
 // Type info: 0 for failure, 1 for success, -1 for no implementation
 @SuppressWarnings("unused")
-public class EconomyAction {
+public class Transaction {
     private final float amount, balance;
     private final boolean success;
     private final String message;
@@ -23,7 +23,7 @@ public class EconomyAction {
         return message;
     }
 
-    public EconomyAction(float amount, float balance, boolean success, String message) {
+    public Transaction(float amount, float balance, boolean success, String message) {
         this.amount = amount;
         this.balance = balance;
         this.success = success;

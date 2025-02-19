@@ -32,26 +32,26 @@ public class EconomyManager {
     }
 
     // Amount shouldn't be negative. EVER.
-    public EconomyAction deposit(OfflinePlayer player, float amount) {
+    public Transaction deposit(OfflinePlayer player, float amount) {
         if (amount < 0) 
-            return new EconomyAction(amount, getBalance(player),
+            return new Transaction(amount, getBalance(player),
                                 false, "Negative amount");
         setBalance(player, getBalance(player)+amount);
-        return new EconomyAction(amount, getBalance(player),
+        return new Transaction(amount, getBalance(player),
                             true, "");
     }
 
     // Again, amount shouldn't be negative.
     // Also, can't withdraw if player doesn't have that much. Obviously
-    public EconomyAction withdraw(OfflinePlayer player, float amount) {
+    public Transaction withdraw(OfflinePlayer player, float amount) {
         if (amount < 0) 
-                    return new EconomyAction(amount, getBalance(player),
+                    return new Transaction(amount, getBalance(player),
                                         false, "Negative amount");
         if (amount > getBalance(player)) 
-                    return new EconomyAction(amount, getBalance(player),
+                    return new Transaction(amount, getBalance(player),
                                         false, "Insufficient funds");
         setBalance(player, getBalance(player)-amount);
-        return new EconomyAction(amount, getBalance(player),
+        return new Transaction(amount, getBalance(player),
                             true, "");
     }
 

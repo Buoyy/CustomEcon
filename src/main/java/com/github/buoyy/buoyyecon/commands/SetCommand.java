@@ -1,6 +1,6 @@
 package com.github.buoyy.buoyyecon.commands;
 
-import com.github.buoyy.buoyyecon.economy.EconomyAction;
+import com.github.buoyy.buoyyecon.economy.Transaction;
 import com.github.buoyy.buoyyecon.economy.EconomyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,7 +31,7 @@ public class SetCommand implements SubCommand {
                 sender.sendMessage(ChatColor.RED + "Amount must be a number!");
                 return true;
             }
-            EconomyAction action = ((amount < econ.getBalance(target)) ?
+            Transaction action = ((amount < econ.getBalance(target)) ?
                     econ.withdraw(target, econ.getBalance(target) - amount) :
                     econ.deposit(target, amount - econ.getBalance(target)));
             if (!action.isSuccessful()) {
