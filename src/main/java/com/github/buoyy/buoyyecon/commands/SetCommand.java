@@ -18,7 +18,6 @@ public class SetCommand implements SubCommand {
     private final EconomyManager econ = BuoyyEcon.getEconomy();
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Incomplete command!");
@@ -26,22 +25,23 @@ public class SetCommand implements SubCommand {
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
         if (econ.hasAccount(target)) {
+            // Float because we cant check if it is NaN.
             float amount = Float.parseFloat(args[2]);
             if (Float.isNaN(amount)) {
                 sender.sendMessage(ChatColor.RED + "Amount must be a number!");
                 return true;
             }
-            Transaction action = ((amount < econ.getBalance(target)) ?
-                    econ.withdraw(target, econ.getBalance(target) - amount) :
-                    econ.deposit(target, amount - econ.getBalance(target)));
-            if (!action.isSuccessful()) {
-                sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + action.getMessage());
+            Transaction set = ((amount < econ.getBalance(target)) ?
+                    econ.withdraw(target, econ.getBalance(target)-(int)amount) :
+                    econ.deposit(target, (int)amount-econ.getBalance(target)));
+            if (!set.isSuccessful()) {
+                sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + set.message);
             } else {
                 sender.sendMessage(ChatColor.AQUA + target.getName() + "'s" +
-                        ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+                        ChatColor.GREEN + " balance was set to " + ChatColor.GOLD + econ.prettyBal(target));
                 if (target.isOnline())
                     Objects.requireNonNull(target.getPlayer()).sendMessage(ChatColor.GREEN + "Your balance was set to "
-                            + ChatColor.GOLD + econ.format(econ.getBalance(target)));
+                            + ChatColor.GOLD + econ.prettyBal(target));
             }
         } else
             sender.sendMessage(ChatColor.RED + "No such player exists/has ever joined the server.");
@@ -56,7 +56,7 @@ public class SetCommand implements SubCommand {
         } else if (args.length == 3) {
             tabs = Arrays.asList("1", "10", "100", "1000");
         } else {
-            tabs = null;
+            tabs = List.of();
         }
         return tabs;
     }

@@ -9,7 +9,9 @@ import com.github.buoyy.buoyyecon.BuoyyEcon;
 public class PlayerEventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!event.getPlayer().hasPlayedBefore())
+        if (!event.getPlayer().hasPlayedBefore() ||
+                !BuoyyEcon.getEconomy().hasAccount(event.getPlayer())) {
             BuoyyEcon.getEconomy().createAccount(event.getPlayer());
+        }
     }
 }

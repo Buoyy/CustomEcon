@@ -1,19 +1,19 @@
 package com.github.buoyy.buoyyecon.files;
 
+import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.Messenger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class CustomYAML {
     private File file;
     private FileConfiguration config;
-
-    public CustomYAML(String filename) {
-        setup(filename);
-    }
+    private final Messenger messenger = BuoyyEcon.getMessenger();
     public FileConfiguration getConfig() {
         return config;
     }
@@ -22,7 +22,7 @@ public class CustomYAML {
         try {
             config.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            messenger.consoleBad(e.getMessage());
         }
     }
 
@@ -30,15 +30,20 @@ public class CustomYAML {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    private void setup(String name) {
-        file = new File(Bukkit.getServer().getPluginManager().getPlugin("BuoyyEcon").getDataFolder(), name + ".yml");
+    public void setup(String name) {
+        file = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("BuoyyEcon")).getDataFolder(), name + ".yml");
         if (!file.exists()) {
+            messenger.consoleOK("Data file not found. Creating new file...");
             try {
-                file.createNewFile();
+                if (file.createNewFile())
+                    messenger.consoleGood(name+" file was successfully created.");
             } catch (IOException e) {
-                e.getMessage();
+                messenger.consoleBad(e.getMessage());
             }
+        } else {
+            messenger.consoleGood(name+" file found! Loading...");
         }
         config = YamlConfiguration.loadConfiguration(file);
+        messenger.consoleGood("Loaded data file!");
     }
 }

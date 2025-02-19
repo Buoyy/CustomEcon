@@ -20,7 +20,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         subs.put(name.toLowerCase(), command);
     }
 
-    @Override @SuppressWarnings("deprecation")
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.GREEN + "Usage: /econ <deposit/withdraw/view/set>");
