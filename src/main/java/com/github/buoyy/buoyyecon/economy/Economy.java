@@ -59,6 +59,7 @@ public class Economy {
         } else {
             if (player.isOnline())
                 ((Player)player).sendMessage(ChatColor.RED + "54 stacks is the current limit!\nCan't have more diamonds.");
+            setBalance(player, 54*64);
         }
     }
 
