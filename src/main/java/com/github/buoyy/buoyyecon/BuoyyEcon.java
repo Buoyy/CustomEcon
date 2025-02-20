@@ -1,10 +1,9 @@
 package com.github.buoyy.buoyyecon;
 
 import com.github.buoyy.buoyyecon.commands.*;
-import com.github.buoyy.buoyyecon.economy.EconomyManager;
+import com.github.buoyy.buoyyecon.economy.Economy;
 
-import com.github.buoyy.buoyyecon.files.CustomYAML;
-import com.github.buoyy.buoyyecon.listeners.PlayerEventListener;
+import com.github.buoyy.buoyyecon.files.YAML;
 
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,8 +14,8 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static BuoyyEcon plugin;
     private static Messenger messenger;
-    private static CustomYAML dataFile;
-    private static EconomyManager econ;
+    private static YAML dataFile;
+    private static Economy econ;
 
     // Enable and load all needed data.
     @Override
@@ -24,7 +23,6 @@ public final class BuoyyEcon extends JavaPlugin {
         saveDefaultConfig();
         initiateObjects();
         registerCommands();
-        registerEventListeners();
         messenger.consoleGood("Economy has been loaded successfully.");
         messenger.consoleGood("Found " + dataFile.getConfig().getKeys(false).size() +
                 " players in data file.");
@@ -44,12 +42,8 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         plugin = this;
         messenger = new Messenger();
-        dataFile = new CustomYAML(); dataFile.setup("accounts");
-        econ = new EconomyManager();
-    }
-
-    private void registerEventListeners() {
-        getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
+        dataFile = new YAML(); dataFile.setup("accounts");
+        econ = new Economy();
     }
 
     private void registerCommands() {
@@ -65,8 +59,8 @@ public final class BuoyyEcon extends JavaPlugin {
     }
 
     // You guessed it.
-    public static EconomyManager getEconomy() { return econ; }
+    public static Economy getEconomy() { return econ; }
     public static Messenger getMessenger() { return messenger; }
     public static BuoyyEcon getPlugin() { return plugin; }
-    public static CustomYAML getDataFile() { return dataFile; }
+    public static YAML getDataFile() { return dataFile; }
 }

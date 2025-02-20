@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class CustomYAML {
+public class YAML {
     private File file;
     private FileConfiguration config;
     private final Messenger messenger = BuoyyEcon.getMessenger();

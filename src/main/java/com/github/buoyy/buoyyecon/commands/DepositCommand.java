@@ -2,7 +2,7 @@ package com.github.buoyy.buoyyecon.commands;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.economy.Transaction;
-import com.github.buoyy.buoyyecon.economy.EconomyManager;
+import com.github.buoyy.buoyyecon.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DepositCommand implements SubCommand {
-    private final EconomyManager econ = BuoyyEcon.getEconomy();
+    private final Economy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) {
