@@ -6,10 +6,13 @@ import com.github.buoyy.buoyyecon.economy.Economy;
 import com.github.buoyy.buoyyecon.files.YAML;
 
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
 
@@ -25,9 +28,10 @@ public final class BuoyyEcon extends JavaPlugin {
         initiateObjects();
         registerListeners();
         registerCommands();
-        messenger.consoleGood("Economy has been loaded successfully.");
         messenger.consoleGood("Found " + dataFile.getConfig().getKeys(false).size() +
                 " players in data file.");
+        loadAccounts();
+        messenger.consoleGood("Economy has been loaded successfully.");
     }
 
     // Disable everything and free memory
@@ -48,6 +52,12 @@ public final class BuoyyEcon extends JavaPlugin {
         econ = new Economy();
     }
 
+    private void loadAccounts() {
+        for (String i: dataFile.getConfig().getKeys(false)) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(i));
+            econ.loadAccount(player);
+        }
+    }
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
@@ -58,6 +68,7 @@ public final class BuoyyEcon extends JavaPlugin {
         main.registerSubCommand("view", new ViewCommand());
         main.registerSubCommand("deposit", new DepositCommand());
         main.registerSubCommand("withdraw", new WithdrawCommand());
+        main.registerSubCommand("open", new OpenCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
         messenger.consoleGood("Successfully registered commands.");

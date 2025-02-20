@@ -9,6 +9,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (BuoyyEcon.getEconomy().hasAccount(e.getPlayer())) return;
-        BuoyyEcon.getEconomy().createAccount(e.getPlayer());
+        BuoyyEcon.getEconomy().loadAccount(e.getPlayer());
     }
 }
