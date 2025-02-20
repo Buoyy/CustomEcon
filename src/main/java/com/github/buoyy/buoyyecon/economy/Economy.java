@@ -59,9 +59,7 @@ public class Economy {
     }
 
     public void createAccount(OfflinePlayer player) {
-        if (!hasAccount(player)) {
             BuoyyEcon.getMessenger().consoleOK("Created account for player "+player.getName());
             setBalance(player, 0);
-        }
     }
 }

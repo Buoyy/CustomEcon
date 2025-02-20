@@ -5,6 +5,7 @@ import com.github.buoyy.buoyyecon.economy.Economy;
 
 import com.github.buoyy.buoyyecon.files.YAML;
 
+import com.github.buoyy.buoyyecon.listeners.PlayerListener;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,7 @@ public final class BuoyyEcon extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         initiateObjects();
+        registerListeners();
         registerCommands();
         messenger.consoleGood("Economy has been loaded successfully.");
         messenger.consoleGood("Found " + dataFile.getConfig().getKeys(false).size() +
@@ -46,6 +48,9 @@ public final class BuoyyEcon extends JavaPlugin {
         econ = new Economy();
     }
 
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+    }
     private void registerCommands() {
         MainCommand main = new MainCommand();
         main.registerSubCommand("reload", new ReloadCommand());
