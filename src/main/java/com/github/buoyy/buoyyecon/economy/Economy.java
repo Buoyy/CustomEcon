@@ -3,12 +3,12 @@ package com.github.buoyy.buoyyecon.economy;
 import org.bukkit.OfflinePlayer;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.files.CustomYAML;
+import com.github.buoyy.buoyyecon.files.YAML;
 
 // This class is really just a wrapper for handling the data file
-public class EconomyManager {
+public class Economy {
 
-    private final CustomYAML dataFile = BuoyyEcon.getDataFile();
+    private final YAML dataFile = BuoyyEcon.getDataFile();
     private final String CURRENCY_SINGULAR = BuoyyEcon.getPlugin().getConfig().getString("currency-singular");
     private final String CURRENCY_PLURAL = BuoyyEcon.getPlugin().getConfig().getString("currency-plural");
     // Check if there is a section with the player's UUID

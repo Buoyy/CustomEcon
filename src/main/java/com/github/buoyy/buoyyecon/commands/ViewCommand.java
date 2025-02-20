@@ -1,6 +1,6 @@
 package com.github.buoyy.buoyyecon.commands;
 
-import com.github.buoyy.buoyyecon.economy.EconomyManager;
+import com.github.buoyy.buoyyecon.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -12,7 +12,7 @@ import com.github.buoyy.buoyyecon.BuoyyEcon;
 import java.util.List;
 
 public class ViewCommand implements SubCommand {
-    private final EconomyManager econ = BuoyyEcon.getEconomy();
+    private final Economy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player) && args.length < 2) {
