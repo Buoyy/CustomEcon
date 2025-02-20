@@ -1,20 +1,15 @@
 package com.github.buoyy.buoyyecon.economy;
 
-import com.github.buoyy.buoyyecon.Account;
 import org.bukkit.OfflinePlayer;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.files.YAML;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 // This class is really just a wrapper for handling the data file
 public class Economy {
 
     private final YAML dataFile = BuoyyEcon.getDataFile();
-    private final Map<UUID, Account> accounts = new HashMap<>();
     private final String CURRENCY_SINGULAR = BuoyyEcon.getPlugin().getConfig().getString("currency-singular");
     private final String CURRENCY_PLURAL = BuoyyEcon.getPlugin().getConfig().getString("currency-plural");
     // Check if there is a section with the player's UUID
@@ -47,7 +42,6 @@ public class Economy {
             return new Transaction(amount,
                                 false, "Negative amount");
         setBalance(player, getBalance(player)+amount);
-        accounts.get(player.getUniqueId()).deposit(amount);
         return new Transaction(amount,
                             true, "");
     }
@@ -61,14 +55,12 @@ public class Economy {
         if (amount > getBalance(player)) 
                     return new Transaction(amount, false, "Insufficient funds");
         setBalance(player, getBalance(player)-amount);
-        accounts.get(player.getUniqueId()).withdraw(amount);
         return new Transaction(amount, true, "");
     }
 
     public void createAccount(OfflinePlayer player) {
         if (!hasAccount(player)) {
             BuoyyEcon.getMessenger().consoleOK("Created account for player "+player.getName());
-            accounts.put(player.getUniqueId(), new Account(player));
             setBalance(player, 0);
         }
     }
