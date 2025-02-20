@@ -47,12 +47,13 @@ public class Economy {
     }
 
     // Set the amount and don't forget to save! This private method is pretty useful.
-    private void setBalance(OfflinePlayer player, float amount) {
+    public void setBalance(OfflinePlayer player, float amount) {
         if (amount <= 64 * 54) {
             dataFile.getConfig().set(player.getUniqueId() + ".balance", amount);
-            getStorage(player).clear();
-            if (amount != 0)
-                getStorage(player).addItem(new ItemStack(Material.DIAMOND, (int)amount));
+            if (amount != 0) {
+                getStorage(player).clear();
+                getStorage(player).addItem(new ItemStack(Material.DIAMOND, (int) amount));
+            }
             dataFile.save();
             BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +getBalance(player));
         } else {
