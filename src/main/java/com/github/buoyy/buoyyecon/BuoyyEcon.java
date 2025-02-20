@@ -33,7 +33,7 @@ public final class BuoyyEcon extends JavaPlugin {
     // Disable everything and free memory
     @Override
     public void onDisable() {
-        messenger.consoleOK("Plugin is shutting down!");
+        messenger.consoleGood("Plugin is shutting down!");
         getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
         saveConfig();
