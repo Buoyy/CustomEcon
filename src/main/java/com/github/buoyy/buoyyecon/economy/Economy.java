@@ -1,26 +1,17 @@
 package com.github.buoyy.buoyyecon.economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.files.YAML;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-
-// This class is really just a wrapper for handling the data file
+// This class handles everything data related.
+// For storage stuff, go check the gui package.
 public class Economy {
 
     private final YAML dataFile = BuoyyEcon.getDataFile();
-    private final Map<UUID, Inventory> storage = new HashMap<>();
     private final String CURRENCY_SINGULAR = BuoyyEcon.getPlugin().getConfig().getString("currency-singular");
     private final String CURRENCY_PLURAL = BuoyyEcon.getPlugin().getConfig().getString("currency-plural");
 
@@ -32,10 +23,6 @@ public class Economy {
     // Self-explanatory
     public int getBalance(OfflinePlayer player) {
         return dataFile.getConfig().getInt(player.getUniqueId() + ".balance");
-    }
-
-    public Inventory getStorage(OfflinePlayer player) {
-        return storage.get(player.getUniqueId());
     }
 
     public String format(int amount) {
@@ -50,10 +37,6 @@ public class Economy {
     public void setBalance(OfflinePlayer player, float amount) {
         if (amount <= 64 * 54) {
             dataFile.getConfig().set(player.getUniqueId() + ".balance", amount);
-            if (amount != 0) {
-                getStorage(player).clear();
-                getStorage(player).addItem(new ItemStack(Material.DIAMOND, (int) amount));
-            }
             dataFile.save();
             BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +getBalance(player));
         } else {
@@ -85,15 +68,14 @@ public class Economy {
         return new Transaction(amount, true, "");
     }
 
-    @SuppressWarnings("deprecation")
     public void loadAccount(OfflinePlayer player) {
-        storage.put(player.getUniqueId(), Bukkit.createInventory(null, 54, ChatColor.AQUA+"Storage"));
         if (hasAccount(player)) {
             BuoyyEcon.getMessenger().consoleOK("Player found: "+player.getName());
             final int bal = getBalance(player);
             setBalance(player, bal);
         } else {
             BuoyyEcon.getMessenger().consoleOK("Player not found: "+player.getName());
+            BuoyyEcon.getMessenger().consoleGood("Creating account for "+player.getName());
             setBalance(player, 0);
         }
     }

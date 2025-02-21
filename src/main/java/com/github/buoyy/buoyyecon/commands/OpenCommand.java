@@ -1,6 +1,7 @@
 package com.github.buoyy.buoyyecon.commands;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.gui.impl.StorageGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,7 +14,8 @@ public class OpenCommand implements SubCommand{
             sender.sendMessage("This is a player command only");
             return true;
         }
-        player.openInventory(BuoyyEcon.getEconomy().getStorage(player));
+        BuoyyEcon.getGUIManager()
+                .openGUI(player, new StorageGUI(player));
         return true;
     }
 

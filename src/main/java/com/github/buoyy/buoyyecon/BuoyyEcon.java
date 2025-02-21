@@ -5,7 +5,9 @@ import com.github.buoyy.buoyyecon.economy.Economy;
 
 import com.github.buoyy.buoyyecon.files.YAML;
 
+import com.github.buoyy.buoyyecon.gui.GUIManager;
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
+import com.github.buoyy.buoyyecon.listeners.GUIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.HandlerList;
@@ -20,14 +22,15 @@ public final class BuoyyEcon extends JavaPlugin {
     private static Messenger messenger;
     private static YAML dataFile;
     private static Economy econ;
+    private static GUIManager GUIManager;
 
     // Enable and load all needed data.
     @Override
     public void onEnable() {
         saveDefaultConfig();
         initiateObjects();
-        registerListeners();
         registerCommands();
+        registerListeners();
         messenger.consoleGood("Found " + dataFile.getConfig().getKeys(false).size() +
                 " players in data file.");
         loadAccounts();
@@ -50,6 +53,7 @@ public final class BuoyyEcon extends JavaPlugin {
         messenger = new Messenger();
         dataFile = new YAML(); dataFile.setup("accounts");
         econ = new Economy();
+        GUIManager = new GUIManager();
     }
 
     private void loadAccounts() {
@@ -60,6 +64,7 @@ public final class BuoyyEcon extends JavaPlugin {
     }
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
     private void registerCommands() {
         MainCommand main = new MainCommand();
@@ -76,6 +81,7 @@ public final class BuoyyEcon extends JavaPlugin {
 
     // You guessed it.
     public static Economy getEconomy() { return econ; }
+    public static GUIManager getGUIManager() { return GUIManager; }
     public static Messenger getMessenger() { return messenger; }
     public static BuoyyEcon getPlugin() { return plugin; }
     public static YAML getDataFile() { return dataFile; }
