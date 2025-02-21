@@ -32,7 +32,7 @@ public abstract class InventoryGUI implements InventoryHandler {
     public void onClick(InventoryClickEvent e) {
         e.setCancelled(true);
         InvButton button = this.buttons.get(e.getSlot());
-        if (button != null) button.onClick(e);
+        if (button != null) button.getOnClick().accept(e);
     }
 
     @Override
