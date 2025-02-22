@@ -20,6 +20,7 @@ public class DepositCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED+"Can't add to console!");
             return true;
         }
+        int oldBalance = econ.getBalance(player);
         int amount = Integer.parseInt(args[1]);
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
@@ -42,7 +43,7 @@ public class DepositCommand implements SubCommand {
         }
         player.sendMessage(ChatColor.GREEN + "Now, your balance is "
                 + ChatColor.GOLD + econ.prettyBal(player));
-        int notDeposited = econ.getBalance(player) + amount - 3456;
+        int notDeposited = oldBalance + amount - 3456;
         if (notDeposited > 0) {
             player.getWorld()
                     .dropItemNaturally(player.getLocation(),

@@ -28,7 +28,7 @@ public class WithdrawCommand implements SubCommand {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
             return true;
         }
-        if (!(econ.getBalance(player) < amount)) {
+        if (econ.getBalance(player) < amount) {
             player.sendMessage(ChatColor.RED + "You don't have " + amount + " diamonds" +
                     " in your storage!");
             return true;
