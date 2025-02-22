@@ -21,7 +21,14 @@ public class DepositCommand implements SubCommand {
             return true;
         }
         int oldBalance = econ.getBalance(player);
-        int amount = Integer.parseInt(args[1]);
+        int amount = 0;
+        if (args[1].equals("all")) {
+            for (ItemStack i: player.getInventory().getStorageContents()) {
+                if (i != null && i.getType() == Material.DIAMOND) {
+                    amount += i.getAmount();
+                }
+            }
+        } else amount = Integer.parseInt(args[1]);
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
             return true;
@@ -57,7 +64,7 @@ public class DepositCommand implements SubCommand {
     @Override
     public List<String> getCompletions(String[] args) {
         return args.length == 2 ?
-                List.of("1", "16", "32", "64") :
+                List.of("1", "16", "32", "64", "all") :
                 List.of();
     }
     private int getAvailableSpace(Player player) {

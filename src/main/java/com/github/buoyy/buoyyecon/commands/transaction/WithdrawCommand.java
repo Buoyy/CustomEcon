@@ -23,7 +23,9 @@ public class WithdrawCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED + "Can't remove from console!");
             return true;
         }
-        int amount = Integer.parseInt(args[1]);
+        int amount = (args[1].equals("all")) ?
+                econ.getBalance(player) :
+                Integer.parseInt(args[1]);
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
             return true;
@@ -60,7 +62,7 @@ public class WithdrawCommand implements SubCommand {
     @Override
     public List<String> getCompletions(String[] args) {
         return args.length == 2 ?
-                List.of("1", "16", "32", "64") :
+                List.of("1", "16", "32", "64", "all") :
                 List.of();
     }
 
