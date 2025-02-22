@@ -60,7 +60,6 @@ public class DepositCommand implements SubCommand {
         }
         return true;
     }
-
     @Override
     public List<String> getCompletions(String[] args) {
         return args.length == 2 ?
