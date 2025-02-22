@@ -23,6 +23,7 @@ public class DepositCommand implements SubCommand{
         int amount = Integer.parseInt(args[1]);
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
+            return true;
         }
         if (!(player.getInventory().contains(Material.DIAMOND, amount))) {
             player.sendMessage(ChatColor.RED + "You don't have " + amount + " diamonds" +
