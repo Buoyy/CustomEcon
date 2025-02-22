@@ -20,7 +20,7 @@ public class OpenCommand implements SubCommand{
     }
 
     @Override
-    public List<String> getTabs(String[] args) {
+    public List<String> getCompletions(String[] args) {
         return List.of();
     }
 }

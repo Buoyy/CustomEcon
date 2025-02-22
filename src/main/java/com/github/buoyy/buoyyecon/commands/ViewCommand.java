@@ -28,7 +28,7 @@ public class ViewCommand implements SubCommand {
     }
 
     @Override
-    public List<String> getTabs(String[] args) {
+    public List<String> getCompletions(String[] args) {
         return null;
     }
 }

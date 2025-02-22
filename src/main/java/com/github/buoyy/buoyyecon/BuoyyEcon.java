@@ -68,15 +68,13 @@ public final class BuoyyEcon extends JavaPlugin {
     }
     private void registerCommands() {
         MainCommand main = new MainCommand();
-        main.registerSubCommand("reload", new ReloadCommand());
+        main.registerSubCommand("open", new OpenCommand());
         main.registerSubCommand("set", new SetCommand());
         main.registerSubCommand("view", new ViewCommand());
+        main.registerSubCommand("reload", new ReloadCommand());
         main.registerSubCommand("deposit", new DepositCommand());
-        main.registerSubCommand("withdraw", new WithdrawCommand());
-        main.registerSubCommand("open", new OpenCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
-        messenger.consoleGood("Successfully registered commands.");
     }
 
     // You guessed it.

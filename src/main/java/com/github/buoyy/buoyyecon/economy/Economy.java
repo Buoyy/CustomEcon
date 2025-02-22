@@ -34,38 +34,38 @@ public class Economy {
     }
 
     // Set the amount and don't forget to save! This private method is pretty useful.
-    public void setBalance(OfflinePlayer player, float amount) {
+    public boolean setBalance(OfflinePlayer player, float amount) {
         if (amount <= 64 * 54) {
             dataFile.getConfig().set(player.getUniqueId() + ".balance", amount);
             dataFile.save();
             BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +getBalance(player));
+            return true;
         } else {
             if (player.isOnline())
                 ((Player)player).sendMessage(ChatColor.RED + "54 stacks is the current limit!\nCan't have more diamonds.");
-            setBalance(player, 54*64);
+            return setBalance(player, 54*64);
         }
     }
 
     // Amount shouldn't be negative. EVER.
-    public Transaction deposit(OfflinePlayer player, int amount) {
+    public Transaction add(OfflinePlayer player, int amount) {
         if (amount < 0)
             return new Transaction(amount,
                     false, "Negative amount");
-        setBalance(player, getBalance(player) + amount);
         return new Transaction(amount,
-                true, "");
+                setBalance(player, getBalance(player) + amount), "");
     }
 
     // Again, amount shouldn't be negative.
-    // Also, can't withdraw if player doesn't have that much. Obviously
-    public Transaction withdraw(OfflinePlayer player, int amount) {
+    // Also, can't subtract if player doesn't have that much. Obviously
+    public Transaction subtract(OfflinePlayer player, int amount) {
         if (amount < 0)
             return new Transaction(amount,
                     false, "Negative amount");
         if (amount > getBalance(player))
             return new Transaction(amount, false, "Insufficient funds");
-        setBalance(player, getBalance(player) - amount);
-        return new Transaction(amount, true, "");
+        return new Transaction(amount,
+                setBalance(player, getBalance(player) - amount), "");
     }
 
     public void loadAccount(OfflinePlayer player) {

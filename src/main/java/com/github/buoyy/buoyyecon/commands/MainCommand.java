@@ -1,5 +1,6 @@
 package com.github.buoyy.buoyyecon.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,9 +9,7 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
@@ -23,12 +22,12 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GREEN + "Usage: /econ <deposit/withdraw/view/set>");
+            sender.sendMessage(ChatColor.GREEN + "Usage: /econ <set/deposit/view/open>");
             return true;
         }
         SubCommand subCommand = subs.get(args[0].toLowerCase());
         if (subCommand == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: /econ <deposit/withdraw/view/set>");
+            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: /econ <set/deposit/view/open>");
             return true;
         }
         return subCommand.execute(sender, args);
@@ -40,8 +39,17 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             tabs = subs.keySet().stream().toList();
         } else {
-            tabs = subs.get(args[0]).getTabs(args);
+            tabs = subs.get(args[0]).getCompletions(args);
         }
         return tabs;
+    }
+
+    public static List<String> getPlayerNames() {
+        List<String> playerNames = new ArrayList<>();
+        Arrays.stream(Bukkit.getOfflinePlayers())
+                .toList()
+                .forEach(p->playerNames.add(p.getName()));
+        playerNames.add("self");
+        return playerNames;
     }
 }

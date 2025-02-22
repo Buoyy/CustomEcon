@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +20,16 @@ public class SetCommand implements SubCommand {
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
+        if (sender instanceof Player && !sender.isOp()) {
+            sender.sendMessage(ChatColor.RED + "This command is only for OPs.");
+        }
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Incomplete command!");
             return true;
         }
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+        OfflinePlayer target = args[1].equals("self")
+                ? (OfflinePlayer) sender
+                : Bukkit.getOfflinePlayer(args[1]);
         if (econ.hasAccount(target)) {
             // Float because we cant check if it is NaN.
             float amount = Float.parseFloat(args[2]);
@@ -32,8 +38,8 @@ public class SetCommand implements SubCommand {
                 return true;
             }
             Transaction set = ((amount < econ.getBalance(target)) ?
-                    econ.withdraw(target, econ.getBalance(target)-(int)amount) :
-                    econ.deposit(target, (int)amount-econ.getBalance(target)));
+                    econ.subtract(target, econ.getBalance(target)-(int)amount) :
+                    econ.add(target, (int)amount-econ.getBalance(target)));
             if (!set.isSuccessful()) {
                 sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + set.message);
             } else {
@@ -49,10 +55,10 @@ public class SetCommand implements SubCommand {
     }
 
     @Override
-    public List<String> getTabs(String[] args) {
+    public List<String> getCompletions(String[] args) {
         List<String> tabs;
         if (args.length == 2) {
-            tabs = null;
+            tabs = MainCommand.getPlayerNames();
         } else if (args.length == 3) {
             tabs = Arrays.asList("1", "10", "100", "1000");
         } else {
