@@ -1,6 +1,7 @@
-package com.github.buoyy.buoyyecon.commands;
+package com.github.buoyy.buoyyecon.commands.transaction;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.commands.SubCommand;
 import com.github.buoyy.buoyyecon.economy.Economy;
 import com.github.buoyy.buoyyecon.economy.Transaction;
 import org.bukkit.ChatColor;
@@ -9,10 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class DepositCommand implements SubCommand{
+public class DepositCommand implements SubCommand {
     private final Economy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -30,25 +30,36 @@ public class DepositCommand implements SubCommand{
                     " in your inventory!");
             return true;
         }
+        if (getAvailableSpace(player) == 0) {
+            player.sendMessage(ChatColor.RED+"You don't have more storage space!");
+            return true;
+        }
         player.getInventory().removeItem(new ItemStack(Material.DIAMOND, amount));
         Transaction deposition = BuoyyEcon.getEconomy().add(player, amount);
         if (!deposition.isSuccessful()) {
             sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + deposition.message);
-        } else {
-            player.sendMessage(ChatColor.GREEN + "Your balance was set to "
-                        + ChatColor.GOLD + econ.prettyBal(player));
+            return true;
+        }
+        player.sendMessage(ChatColor.GREEN + "Now, your balance is "
+                + ChatColor.GOLD + econ.prettyBal(player));
+        int notDeposited = econ.getBalance(player) + amount - 3456;
+        if (notDeposited > 0) {
+            player.getWorld()
+                    .dropItemNaturally(player.getLocation(),
+                            new ItemStack(Material.DIAMOND, notDeposited));
+            player.sendMessage(ChatColor.DARK_GREEN+econ.format(notDeposited)+
+                    " have been dropped to you as they couldn't be stored.");
         }
         return true;
     }
 
     @Override
     public List<String> getCompletions(String[] args) {
-        List<String> tabs;
-        if (args.length == 2) {
-            tabs = Arrays.asList("1", "10", "100", "1000");
-        } else {
-            tabs = List.of();
-        }
-        return tabs;
+        return args.length == 2 ?
+                List.of("1", "16", "32", "64") :
+                List.of();
+    }
+    private int getAvailableSpace(Player player) {
+        return (3456 - econ.getBalance(player));
     }
 }

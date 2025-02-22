@@ -1,5 +1,6 @@
-package com.github.buoyy.buoyyecon.commands;
+package com.github.buoyy.buoyyecon.commands.util;
 
+import com.github.buoyy.buoyyecon.commands.SubCommand;
 import com.github.buoyy.buoyyecon.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

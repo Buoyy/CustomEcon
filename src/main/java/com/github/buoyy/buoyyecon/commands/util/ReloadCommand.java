@@ -1,12 +1,13 @@
-package com.github.buoyy.buoyyecon.commands;
+package com.github.buoyy.buoyyecon.commands.util;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.commands.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class ReloadCommand implements SubCommand{
+public class ReloadCommand implements SubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         BuoyyEcon.getMessenger().consoleGood("Reloading plugin files...");
