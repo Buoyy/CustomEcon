@@ -6,7 +6,7 @@ import com.github.buoyy.buoyyecon.commands.transaction.DepositCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.PayCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.WithdrawCommand;
 import com.github.buoyy.buoyyecon.commands.util.*;
-import com.github.buoyy.buoyyecon.economy.Economy;
+import com.github.buoyy.buoyyecon.economy.EconomyImpl;
 
 import com.github.buoyy.buoyyecon.files.YAML;
 
@@ -28,7 +28,7 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static Messenger messenger;
     private static YAML dataFile;
-    private static Economy econ;
+    private static EconomyImpl econ;
     private static GUIManager GUIManager;
 
     // Enable and load all needed data.
@@ -61,7 +61,7 @@ public final class BuoyyEcon extends JavaPlugin {
     private void initiateObjects() {
         messenger = new Messenger();
         dataFile = new YAML(); dataFile.setup("accounts");
-        econ = new Economy();
+        econ = new EconomyImpl();
         GUIManager = new GUIManager();
     }
 
@@ -100,7 +100,7 @@ public final class BuoyyEcon extends JavaPlugin {
                 econ, this, ServicePriority.Highest);
     }
     // You guessed it.
-    public static Economy getEconomy() { return econ; }
+    public static EconomyImpl getEconomy() { return econ; }
     public static GUIManager getGUIManager() { return GUIManager; }
     public static Messenger getMessenger() { return messenger; }
     public static YAML getDataFile() { return dataFile; }

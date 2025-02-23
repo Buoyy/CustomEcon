@@ -5,7 +5,7 @@ import com.github.buoyy.api.Transaction;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.buoyyecon.commands.api.SubCommand;
-import com.github.buoyy.buoyyecon.economy.Economy;
+import com.github.buoyy.buoyyecon.economy.EconomyImpl;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class WithdrawCommand implements SubCommand {
-    private final Economy econ;
+    private final EconomyImpl econ;
     private final CurrencyType type;
 
     public WithdrawCommand(CurrencyType type) {
@@ -29,9 +29,19 @@ public class WithdrawCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED + "Can't remove from console!");
             return true;
         }
-        int amount = (args[1].equals("all")) ?
-                econ.getBalance(player, type) :
-                Integer.parseInt(args[1]);
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Incomplete command!");
+            return true;
+        }
+        int amount;
+        if (args[1].equals("all"))
+            amount = econ.getBalance(player, type);
+        else try {
+            amount = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED+"That's not a number.");
+            return true;
+        }
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
             return true;

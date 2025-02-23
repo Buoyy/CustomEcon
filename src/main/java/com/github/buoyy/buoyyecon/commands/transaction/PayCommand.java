@@ -6,7 +6,7 @@ import com.github.buoyy.buoyyecon.BuoyyEcon;
 
 import com.github.buoyy.buoyyecon.commands.api.BaseCommand;
 import com.github.buoyy.buoyyecon.commands.api.SubCommand;
-import com.github.buoyy.buoyyecon.economy.Economy;
+import com.github.buoyy.buoyyecon.economy.EconomyImpl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class PayCommand implements SubCommand {
-    private final Economy econ;
+    private final EconomyImpl econ;
     private final CurrencyType type;
     public PayCommand(CurrencyType type) {
         this.econ = BuoyyEcon.getEconomy();
@@ -31,9 +31,18 @@ public class PayCommand implements SubCommand {
             sender.sendMessage(ChatColor.RED + "This is a player only command!");
             return true;
         }
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Incomplete command!");
+            return true;
+        }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
         if (econ.hasAccount(target)) { // Process only if target has played before (obviously)
-            int amount = Integer.parseInt(args[2]);
+            int amount = 0;
+            try {
+                amount = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED+"That's not a number.");
+            }
             if (amount == 0) {
                 player.sendMessage(ChatColor.DARK_GREEN + "Can't pay zero amount.");
                 return true;

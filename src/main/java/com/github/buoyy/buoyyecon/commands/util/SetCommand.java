@@ -4,7 +4,7 @@ import com.github.buoyy.api.CurrencyType;
 import com.github.buoyy.api.Transaction;
 import com.github.buoyy.buoyyecon.commands.api.BaseCommand;
 import com.github.buoyy.buoyyecon.commands.api.SubCommand;
-import com.github.buoyy.buoyyecon.economy.Economy;
+import com.github.buoyy.buoyyecon.economy.EconomyImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @SuppressWarnings("deprecation")
 public class SetCommand implements SubCommand {
 
-    private final Economy econ;
+    private final EconomyImpl econ;
     private final CurrencyType type;
 
     public SetCommand(CurrencyType type) {
@@ -42,14 +42,16 @@ public class SetCommand implements SubCommand {
                 : Bukkit.getOfflinePlayer(args[1]);
         if (econ.hasAccount(target)) {
             // Float because we cant check if it is NaN.
-            float amount = Float.parseFloat(args[2]);
-            if (Float.isNaN(amount)) {
-                sender.sendMessage(ChatColor.RED + "Amount must be a number!");
+            int amount;
+            try {
+                amount = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED+"That's not a number.");
                 return true;
             }
-            Transaction set = ((econ.has(target, CurrencyType.DIAMOND, (int)amount)) ?
-                    econ.subtract(target, type, (int)amount) :
-                    econ.add(target, type, (int)amount));
+            Transaction set = ((econ.has(target, type, amount)) ?
+                    econ.subtract(target, type, econ.getBalance(target, type)-amount) :
+                    econ.add(target, type, econ.getBalance(target, type)+amount));
             if (!set.isSuccessful()) {
                 sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + set.message);
             } else {

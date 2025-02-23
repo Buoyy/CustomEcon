@@ -1,6 +1,7 @@
 package com.github.buoyy.buoyyecon.economy;
 
 import com.github.buoyy.api.CurrencyType;
+import com.github.buoyy.api.Economy;
 import com.github.buoyy.api.Transaction;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -11,7 +12,7 @@ import org.bukkit.entity.Player;
 
 // This class handles everything data related.
 // For storage stuff, go check the gui package.
-public class Economy implements com.github.buoyy.api.Economy {
+public class EconomyImpl implements Economy {
 
     private final YAML dataFile = BuoyyEcon.getDataFile();
     // Check if there is a section with the player's UUID
@@ -24,7 +25,7 @@ public class Economy implements com.github.buoyy.api.Economy {
     @Override
     public int getBalance(OfflinePlayer player, CurrencyType type) {
         return dataFile.getConfig().getInt(player.getUniqueId()+
-                ".balance."+type.getNameSingular());
+                ".balance."+type.getNamePlural());
     }
 
     @Override
@@ -44,15 +45,15 @@ public class Economy implements com.github.buoyy.api.Economy {
     // Set the amount and don't forget to save! This private method is pretty useful.
     public void setBalance(OfflinePlayer player, CurrencyType type, int amount) {
         if (amount <= 3456) {
-            dataFile.getConfig().set(player.getUniqueId() + ".balance", amount);
+            dataFile.getConfig().set(player.getUniqueId() + ".balance."+type.getNamePlural(), amount);
             dataFile.save();
-            BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +getBalance(player, type));
+            BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +prettyBal(player, type));
             if (player.isOnline())
                 ((Player)player).sendMessage(ChatColor.GREEN+"Now, your balance is "+ChatColor.GOLD+prettyBal(player, type));
         } else {
             if (player.isOnline())
                 ((Player)player).sendMessage(ChatColor.RED + "54 stacks is the current limit!\nCan't have more diamonds.");
-            setBalance(player, CurrencyType.DIAMOND, 3456);
+            setBalance(player, type, 3456);
         }
     }
 
@@ -61,12 +62,12 @@ public class Economy implements com.github.buoyy.api.Economy {
     public Transaction add(OfflinePlayer player, CurrencyType type, int amount) {
         if (amount < 0)
             return new Transaction(amount,
-                    CurrencyType.DIAMOND,
+                    type,
                     "Negative amount",
                     Transaction.TransactionResult.FAILURE);
         setBalance(player, type, getBalance(player, type)+amount);
         return new Transaction(amount,
-                CurrencyType.DIAMOND,
+                type,
                 "",
                 Transaction.TransactionResult.SUCCESS);
     }
@@ -77,7 +78,7 @@ public class Economy implements com.github.buoyy.api.Economy {
     public Transaction subtract(OfflinePlayer player, CurrencyType type, int amount) {
         if (amount < 0)
             return new Transaction(amount,
-                    CurrencyType.DIAMOND,
+                    type,
                     "Negative amount",
                     Transaction.TransactionResult.FAILURE);
         if (!has(player, type, amount))
@@ -93,13 +94,16 @@ public class Economy implements com.github.buoyy.api.Economy {
 
     public void loadAccount(OfflinePlayer player) {
         if (hasAccount(player)) {
-            BuoyyEcon.getMessenger().consoleOK("Player found: "+player.getName());
-            final int bal = getBalance(player, CurrencyType.DIAMOND);
-            setBalance(player,CurrencyType.DIAMOND, bal);
+            BuoyyEcon.getMessenger().consoleOK("Player account found: "+player.getName());
+            final int dia = getBalance(player, CurrencyType.DIAMOND);
+            final int gold = getBalance(player, CurrencyType.GOLD);
+            setBalance(player, CurrencyType.DIAMOND, dia);
+            setBalance(player, CurrencyType.GOLD, gold);
         } else {
-            BuoyyEcon.getMessenger().consoleOK("Player not found: "+player.getName());
+            BuoyyEcon.getMessenger().consoleOK("Account not found for: "+player.getName());
             BuoyyEcon.getMessenger().consoleGood("Creating account for "+player.getName());
-            setBalance(player,CurrencyType.DIAMOND, 0);
+            setBalance(player, CurrencyType.DIAMOND, 0);
+            setBalance(player, CurrencyType.GOLD, 0);
         }
     }
 }
