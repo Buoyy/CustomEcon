@@ -39,6 +39,8 @@ public class Economy {
             dataFile.getConfig().set(player.getUniqueId() + ".balance", amount);
             dataFile.save();
             BuoyyEcon.getMessenger().consoleOK("Set balance of player " + player.getName() + " to " +getBalance(player));
+            if (player.isOnline())
+                ((Player)player).sendMessage(ChatColor.GREEN+"Now, your balance is "+ChatColor.GOLD+prettyBal(player));
             return true;
         } else {
             if (player.isOnline())

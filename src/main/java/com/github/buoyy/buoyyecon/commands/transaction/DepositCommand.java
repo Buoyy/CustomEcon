@@ -48,8 +48,6 @@ public class DepositCommand implements SubCommand {
             sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + deposition.message);
             return true;
         }
-        player.sendMessage(ChatColor.GREEN + "Now, your balance is "
-                + ChatColor.GOLD + econ.prettyBal(player));
         int notDeposited = oldBalance + amount - 3456;
         if (notDeposited > 0) {
             player.getWorld()

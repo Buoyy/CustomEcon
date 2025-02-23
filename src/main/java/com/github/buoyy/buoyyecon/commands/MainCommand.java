@@ -44,12 +44,12 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         return tabs;
     }
 
-    public static List<String> getPlayerNames() {
-        List<String> playerNames = new ArrayList<>();
+    public static List<String> getPlayerNames(boolean includeSelf) {
+        List<String> names = new ArrayList<>();
         Arrays.stream(Bukkit.getOfflinePlayers())
                 .toList()
-                .forEach(p->playerNames.add(p.getName()));
-        playerNames.add("self");
-        return playerNames;
+                .forEach(p->names.add(p.getName()));
+        if (includeSelf) names.add("self");
+        return names;
     }
 }

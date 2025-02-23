@@ -2,6 +2,7 @@ package com.github.buoyy.buoyyecon;
 
 import com.github.buoyy.buoyyecon.commands.*;
 import com.github.buoyy.buoyyecon.commands.transaction.DepositCommand;
+import com.github.buoyy.buoyyecon.commands.transaction.PayCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.WithdrawCommand;
 import com.github.buoyy.buoyyecon.commands.util.OpenCommand;
 import com.github.buoyy.buoyyecon.commands.util.ReloadCommand;
@@ -80,6 +81,7 @@ public final class BuoyyEcon extends JavaPlugin {
         main.registerSubCommand("reload", new ReloadCommand());
         main.registerSubCommand("withdraw", new WithdrawCommand());
         main.registerSubCommand("deposit", new DepositCommand());
+        main.registerSubCommand("pay", new PayCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(main);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
     }

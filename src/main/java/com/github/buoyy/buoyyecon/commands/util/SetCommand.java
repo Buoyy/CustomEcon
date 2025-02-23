@@ -60,9 +60,9 @@ public class SetCommand implements SubCommand {
     public List<String> getCompletions(String[] args) {
         List<String> tabs;
         if (args.length == 2) {
-            tabs = MainCommand.getPlayerNames();
+            tabs = MainCommand.getPlayerNames(true);
         } else if (args.length == 3) {
-            tabs = Arrays.asList("1", "10", "100", "1000");
+            tabs = Arrays.asList("1", "16", "32", "64");
         } else {
             tabs = List.of();
         }
