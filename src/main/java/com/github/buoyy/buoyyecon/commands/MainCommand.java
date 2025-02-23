@@ -22,12 +22,12 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GREEN + "Usage: /econ <set/deposit/view/open>");
+            sender.sendMessage(ChatColor.GREEN + "Usage: /econ <set/deposit/withdraw/pay/view/open>");
             return true;
         }
         SubCommand subCommand = subs.get(args[0].toLowerCase());
         if (subCommand == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: /econ <set/deposit/view/open>");
+            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: /econ <set/deposit/withdraw/pay/view/open>");
             return true;
         }
         return subCommand.execute(sender, args);
