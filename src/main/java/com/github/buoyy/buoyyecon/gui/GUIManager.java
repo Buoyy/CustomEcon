@@ -37,4 +37,8 @@ public class GUIManager {
         this.registerInv(handler.getInv(), handler);
         player.openInventory(handler.getInv());
     }
+    public void openGUI(Player player, InventoryGUI handler) {
+        this.registerInv(handler.getInv(), handler);
+        player.openInventory(handler.getInv());
+    }
 }

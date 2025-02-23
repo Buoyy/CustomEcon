@@ -1,21 +1,27 @@
 package com.github.buoyy.buoyyecon.commands.transaction;
 
+import com.github.buoyy.api.CurrencyType;
+import com.github.buoyy.api.Transaction;
+
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.commands.SubCommand;
+import com.github.buoyy.buoyyecon.commands.api.SubCommand;
 import com.github.buoyy.buoyyecon.economy.Economy;
-import com.github.buoyy.buoyyecon.economy.Transaction;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-
 public class WithdrawCommand implements SubCommand {
-    private final Economy econ = BuoyyEcon.getEconomy();
+    private final Economy econ;
+    private final CurrencyType type;
+
+    public WithdrawCommand(CurrencyType type) {
+        this.econ = BuoyyEcon.getEconomy();
+        this.type = type;
+    }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -24,26 +30,26 @@ public class WithdrawCommand implements SubCommand {
             return true;
         }
         int amount = (args[1].equals("all")) ?
-                econ.getBalance(player) :
+                econ.getBalance(player, type) :
                 Integer.parseInt(args[1]);
         if (amount == 0) {
             player.sendMessage(ChatColor.RED + "Can't add zero diamonds!");
             return true;
         }
-        if (econ.getBalance(player) < amount) {
-            player.sendMessage(ChatColor.RED + "You don't have " + amount + " diamonds" +
+        if (!econ.has(player, type, amount)) {
+            player.sendMessage(ChatColor.RED + "You don't have " +econ.format(amount, type) +
                     " in your storage!");
             return true;
         }
-        Transaction withdrawal = econ.subtract(player, amount);
+        Transaction withdrawal = econ.subtract(player,type, amount);
         if (!withdrawal.isSuccessful()) {
             player.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + withdrawal.message);
             return true;
         }
         //Then we can drop the withdrawn diamonds at the player.
-        ItemStack toDrop = new ItemStack(Material.DIAMOND, amount);
+        ItemStack toDrop = new ItemStack(type.getMaterial(), amount);
         player.getWorld().dropItemNaturally(player.getLocation(), toDrop);
-        player.sendMessage(ChatColor.GREEN+"The withdrawn diamonds have been dropped near you.");
+        player.sendMessage(ChatColor.GREEN+"The withdrawn "+type.getNamePlural()+" have been dropped near you.");
         return true;
     }
     @Override

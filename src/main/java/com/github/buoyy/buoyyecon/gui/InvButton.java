@@ -5,9 +5,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-@SuppressWarnings("deprecation")
 public class InvButton {
     private final ItemStack icon;
     private final Consumer<InventoryClickEvent> onClick;
@@ -38,13 +38,14 @@ public class InvButton {
         }
 
         public Builder setName(String name) {
-            
-            this.icon.getItemMeta().setDisplayName(name);
+            Objects.requireNonNull(this.icon.getItemMeta())
+                    .setDisplayName(name);
             return this;
         }
 
         public Builder setLore(String... lore) {
-            this.icon.getItemMeta().setLore(Arrays.asList(lore));      
+            Objects.requireNonNull(this.icon.getItemMeta())
+                    .setLore(Arrays.asList(lore));
             return this;
         }
         public Builder setOnClick(Consumer<InventoryClickEvent> onClick) {

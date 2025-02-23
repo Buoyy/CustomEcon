@@ -1,4 +1,4 @@
-package com.github.buoyy.buoyyecon.commands;
+package com.github.buoyy.buoyyecon.commands.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -6,15 +6,25 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
-public class MainCommand implements CommandExecutor, TabCompleter {
+public class BaseCommand implements CommandExecutor, TabCompleter {
 
-    private final Map<String, SubCommand> subs = new HashMap<>();
+    private final Map<String, SubCommand> subs;
+    private final String usage;
+    private final Consumer<Player> onNoArgs;
 
+    public BaseCommand(String usage, Consumer<Player> onNoArgs) {
+        this.subs = new HashMap<>();
+        this.usage = usage;
+        this.onNoArgs = onNoArgs;
+    }
     public void registerSubCommand(String name, SubCommand command) {
         subs.put(name.toLowerCase(), command);
     }
@@ -22,12 +32,16 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GREEN + "Usage: /econ <set/deposit/withdraw/pay/view/open>");
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(ChatColor.GREEN+"Usage: "+usage);
+                return true;
+            }
+            this.onNoArgs.accept(player);
             return true;
         }
         SubCommand subCommand = subs.get(args[0].toLowerCase());
         if (subCommand == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: /econ <set/deposit/withdraw/pay/view/open>");
+            sender.sendMessage(ChatColor.RED + "Unknown subcommand!\nUsage: "+usage);
             return true;
         }
         return subCommand.execute(sender, args);
@@ -48,7 +62,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         List<String> names = new ArrayList<>();
         Arrays.stream(Bukkit.getOfflinePlayers())
                 .toList()
-                .forEach(p->names.add(p.getName()));
+                .forEach(p -> names.add(p.getName()));
         if (includeSelf) names.add("self");
         return names;
     }

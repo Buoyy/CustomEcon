@@ -1,4 +1,4 @@
-package com.github.buoyy.buoyyecon.commands;
+package com.github.buoyy.buoyyecon.commands.api;
 
 import org.bukkit.command.CommandSender;
 

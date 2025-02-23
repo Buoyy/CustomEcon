@@ -1,23 +1,24 @@
 package com.github.buoyy.buoyyecon;
 
-import com.github.buoyy.buoyyecon.commands.*;
+import com.github.buoyy.api.CurrencyType;
+import com.github.buoyy.buoyyecon.commands.api.BaseCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.DepositCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.PayCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.WithdrawCommand;
-import com.github.buoyy.buoyyecon.commands.util.OpenCommand;
-import com.github.buoyy.buoyyecon.commands.util.ReloadCommand;
-import com.github.buoyy.buoyyecon.commands.util.SetCommand;
-import com.github.buoyy.buoyyecon.commands.util.ViewCommand;
+import com.github.buoyy.buoyyecon.commands.util.*;
 import com.github.buoyy.buoyyecon.economy.Economy;
 
 import com.github.buoyy.buoyyecon.files.YAML;
 
 import com.github.buoyy.buoyyecon.gui.GUIManager;
+import com.github.buoyy.buoyyecon.gui.impl.EconOpenerGUI;
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
 import com.github.buoyy.buoyyecon.listeners.GUIListener;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -25,7 +26,6 @@ import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
 
-    private static BuoyyEcon plugin;
     private static Messenger messenger;
     private static YAML dataFile;
     private static Economy econ;
@@ -36,8 +36,11 @@ public final class BuoyyEcon extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         initiateObjects();
-        registerCommands();
+        registerTypedCommand("dia","/dia <withdraw/deposit/set/open/pay>", CurrencyType.DIAMOND);
+        registerTypedCommand("gold","/gold <withdraw/deposit/set/open/pay>", CurrencyType.GOLD);
+        registerEconCommand();
         registerListeners();
+        setupEconomy();
         messenger.consoleGood("Found " + dataFile.getConfig().getKeys(false).size() +
                 " players in data file.");
         loadAccounts();
@@ -56,7 +59,6 @@ public final class BuoyyEcon extends JavaPlugin {
 
     // This is for initiating all needed objects excluding main command
     private void initiateObjects() {
-        plugin = this;
         messenger = new Messenger();
         dataFile = new YAML(); dataFile.setup("accounts");
         econ = new Economy();
@@ -73,23 +75,33 @@ public final class BuoyyEcon extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
-    private void registerCommands() {
-        MainCommand main = new MainCommand();
-        main.registerSubCommand("open", new OpenCommand());
-        main.registerSubCommand("set", new SetCommand());
-        main.registerSubCommand("view", new ViewCommand());
-        main.registerSubCommand("reload", new ReloadCommand());
-        main.registerSubCommand("withdraw", new WithdrawCommand());
-        main.registerSubCommand("deposit", new DepositCommand());
-        main.registerSubCommand("pay", new PayCommand());
-        Objects.requireNonNull(getCommand("econ")).setExecutor(main);
-        Objects.requireNonNull(getCommand("econ")).setTabCompleter(main);
+    private void registerTypedCommand(String name, String usage, CurrencyType type) {
+        BaseCommand command = new BaseCommand(usage,
+                player -> player.sendMessage(ChatColor.GREEN+"Usage: "+usage));
+        command.registerSubCommand("open", new OpenCommand(type));
+        command.registerSubCommand("set", new SetCommand(type));
+        command.registerSubCommand("view", new ViewCommand(type));
+        command.registerSubCommand("withdraw", new WithdrawCommand(type));
+        command.registerSubCommand("deposit", new DepositCommand(type));
+        command.registerSubCommand("pay", new PayCommand(type));
+        Objects.requireNonNull(getCommand(name)).setExecutor(command);
+        Objects.requireNonNull(getCommand(name)).setTabCompleter(command);
     }
-
+    private void registerEconCommand() {
+        BaseCommand econ = new BaseCommand("/econ <view/reload>",
+                player -> GUIManager.openGUI(player, new EconOpenerGUI()));
+        econ.registerSubCommand("view", new FullViewCommand());
+        econ.registerSubCommand("reload", new ReloadCommand());
+        Objects.requireNonNull(getCommand("econ")).setExecutor(econ);
+        Objects.requireNonNull(getCommand("econ")).setTabCompleter(econ);
+    }
+    private void setupEconomy() {
+        getServer().getServicesManager().register(com.github.buoyy.api.Economy.class,
+                econ, this, ServicePriority.Highest);
+    }
     // You guessed it.
     public static Economy getEconomy() { return econ; }
     public static GUIManager getGUIManager() { return GUIManager; }
     public static Messenger getMessenger() { return messenger; }
-    public static BuoyyEcon getPlugin() { return plugin; }
     public static YAML getDataFile() { return dataFile; }
 }

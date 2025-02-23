@@ -7,5 +7,11 @@ api-version: '1.18'
 load: STARTUP
 commands:
   econ:
-    description: Main command
-    usage: /econ <add/remove/view/set>
+    description: One of the main commands. Use to open GUI or use arguments.
+    usage: /econ <reload/view>
+  dia:
+    description: For all things diamond related.
+    usage: /dia <withdraw/deposit/set/open/pay>
+  gold:
+    description: For all things gold related.
+    usage: /gold <withdraw/deposit/set/open/pay>
