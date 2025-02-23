@@ -59,10 +59,10 @@ public class PayCommand implements SubCommand {
                     ((Player) target).getWorld().dropItemNaturally(((Player) target).getLocation(), toDrop);
                     ((Player) target).sendMessage(ChatColor.DARK_GREEN + "They have been dropped near you.");
                 } else { //Add the remainder back to sender
-                    econ.add(player, notTransferred); //We are sure that there won't be any failures in this transaction. No need to cache it.
                     player.sendMessage(ChatColor.DARK_GREEN + "Targeted player didn't have enough space to store " +
                             ChatColor.GOLD + econ.format(amount) + ChatColor.DARK_GREEN + ". The remaining " + ChatColor.GOLD +
                             econ.format(notTransferred) + ChatColor.DARK_GREEN + " were added back to your storage.");
+                    econ.add(player, notTransferred); //We are sure that there won't be any failures in this transaction. No need to cache it.
                 }
             }
         } else
