@@ -3,9 +3,9 @@ package com.github.buoyy.buoyyecon.gui;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class InvButton {
@@ -38,14 +38,18 @@ public class InvButton {
         }
 
         public Builder setName(String name) {
-            Objects.requireNonNull(this.icon.getItemMeta())
-                    .setDisplayName(name);
+            ItemMeta meta = this.icon.getItemMeta();
+            assert meta != null;
+            meta.setDisplayName(name);
+            this.icon.setItemMeta(meta);
             return this;
         }
 
         public Builder setLore(String... lore) {
-            Objects.requireNonNull(this.icon.getItemMeta())
-                    .setLore(Arrays.asList(lore));
+            ItemMeta meta = this.icon.getItemMeta();
+            assert meta != null;
+            meta.setLore(Arrays.asList(lore));
+            this.icon.setItemMeta(meta);
             return this;
         }
         public Builder setOnClick(Consumer<InventoryClickEvent> onClick) {
