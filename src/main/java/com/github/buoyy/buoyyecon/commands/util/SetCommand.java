@@ -1,10 +1,10 @@
 package com.github.buoyy.buoyyecon.commands.util;
 
-import com.github.buoyy.api.CurrencyType;
-import com.github.buoyy.api.Transaction;
-import com.github.buoyy.buoyyecon.commands.api.BaseCommand;
-import com.github.buoyy.buoyyecon.commands.api.SubCommand;
-import com.github.buoyy.buoyyecon.economy.EconomyImpl;
+import com.github.buoyy.api.economy.CurrencyType;
+import com.github.buoyy.api.economy.Economy;
+import com.github.buoyy.api.economy.Transaction;
+import com.github.buoyy.api.command.BaseCommand;
+import com.github.buoyy.api.command.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @SuppressWarnings("deprecation")
 public class SetCommand implements SubCommand {
 
-    private final EconomyImpl econ;
+    private final Economy econ;
     private final CurrencyType type;
 
     public SetCommand(CurrencyType type) {

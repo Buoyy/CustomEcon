@@ -1,19 +1,22 @@
 package com.github.buoyy.buoyyecon;
 
-import com.github.buoyy.api.CurrencyType;
-import com.github.buoyy.buoyyecon.commands.api.BaseCommand;
+import com.github.buoyy.api.command.BaseCommand;
+import com.github.buoyy.api.economy.CurrencyType;
+import com.github.buoyy.api.economy.Economy;
+import com.github.buoyy.api.file.YAML;
+import com.github.buoyy.api.gui.GUIManager;
+import com.github.buoyy.api.util.Messenger;
+
 import com.github.buoyy.buoyyecon.commands.transaction.DepositCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.PayCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.WithdrawCommand;
 import com.github.buoyy.buoyyecon.commands.util.*;
-import com.github.buoyy.buoyyecon.economy.EconomyImpl;
 
-import com.github.buoyy.buoyyecon.files.YAML;
+import com.github.buoyy.buoyyecon.gui.EconOpenerGUI;
 
-import com.github.buoyy.buoyyecon.gui.GUIManager;
-import com.github.buoyy.buoyyecon.gui.impl.EconOpenerGUI;
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
 import com.github.buoyy.buoyyecon.listeners.GUIListener;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +31,7 @@ public final class BuoyyEcon extends JavaPlugin {
 
     private static Messenger messenger;
     private static YAML dataFile;
-    private static EconomyImpl econ;
+    private static Economy econ;
     private static GUIManager GUIManager;
 
     // Enable and load all needed data.
@@ -60,8 +63,8 @@ public final class BuoyyEcon extends JavaPlugin {
     // This is for initiating all needed objects excluding main command
     private void initiateObjects() {
         messenger = new Messenger();
-        dataFile = new YAML(); dataFile.setup("accounts");
-        econ = new EconomyImpl();
+        dataFile = new YAML(this.getName(), "accounts", messenger);
+        econ = new Economy(dataFile, messenger);
         GUIManager = new GUIManager();
     }
 
@@ -96,11 +99,11 @@ public final class BuoyyEcon extends JavaPlugin {
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(econ);
     }
     private void setupEconomy() {
-        getServer().getServicesManager().register(com.github.buoyy.api.Economy.class,
+        getServer().getServicesManager().register(Economy.class,
                 econ, this, ServicePriority.Highest);
     }
     // You guessed it.
-    public static EconomyImpl getEconomy() { return econ; }
+    public static Economy getEconomy() { return econ; }
     public static GUIManager getGUIManager() { return GUIManager; }
     public static Messenger getMessenger() { return messenger; }
     public static YAML getDataFile() { return dataFile; }

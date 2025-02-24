@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.buoyy</groupId>
-            <artifactId>CustomEconomyAPI</artifactId>
+            <artifactId>SpigotUtilAPI</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

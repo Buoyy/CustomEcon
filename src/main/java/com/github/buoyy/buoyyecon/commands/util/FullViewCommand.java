@@ -1,8 +1,8 @@
 package com.github.buoyy.buoyyecon.commands.util;
 
-import com.github.buoyy.api.CurrencyType;
-import com.github.buoyy.buoyyecon.commands.api.SubCommand;
-import com.github.buoyy.buoyyecon.economy.EconomyImpl;
+import com.github.buoyy.api.economy.CurrencyType;
+import com.github.buoyy.api.economy.Economy;
+import com.github.buoyy.api.command.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class FullViewCommand implements SubCommand {
-    private final EconomyImpl econ = BuoyyEcon.getEconomy();
+    private final Economy econ = BuoyyEcon.getEconomy();
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player) && args.length < 2) {

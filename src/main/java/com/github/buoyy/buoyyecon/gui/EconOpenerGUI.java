@@ -1,7 +1,7 @@
-package com.github.buoyy.buoyyecon.gui.impl;
+package com.github.buoyy.buoyyecon.gui;
 
-import com.github.buoyy.buoyyecon.gui.InvButton;
-import com.github.buoyy.buoyyecon.gui.InventoryGUI;
+import com.github.buoyy.api.gui.InvButton;
+import com.github.buoyy.api.gui.InventoryGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

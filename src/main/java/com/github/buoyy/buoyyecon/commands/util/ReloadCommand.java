@@ -1,7 +1,7 @@
 package com.github.buoyy.buoyyecon.commands.util;
 
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.commands.api.SubCommand;
+import com.github.buoyy.api.command.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

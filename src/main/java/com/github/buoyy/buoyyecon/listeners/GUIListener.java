@@ -1,7 +1,7 @@
 package com.github.buoyy.buoyyecon.listeners;
 
+import com.github.buoyy.api.gui.GUIManager;
 import com.github.buoyy.buoyyecon.BuoyyEcon;
-import com.github.buoyy.buoyyecon.gui.GUIManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
