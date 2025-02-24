@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 public class EconOpenerGUI extends InventoryGUI {
     @Override
-    public Inventory createInventory() {
+    public Inventory createInv() {
         return Bukkit.createInventory(null, 9, ChatColor.GOLD+"Economy");
     }
 

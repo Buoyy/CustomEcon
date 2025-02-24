@@ -1,9 +1,9 @@
 package com.github.buoyy.buoyyecon.commands.util;
 
 import com.github.buoyy.api.economy.CurrencyType;
-import com.github.buoyy.buoyyecon.BuoyyEcon;
 import com.github.buoyy.api.command.SubCommand;
-import com.github.buoyy.api.gui.impl.StorageGUI;
+import com.github.buoyy.buoyyecon.BuoyyEcon;
+import com.github.buoyy.buoyyecon.gui.StorageGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,7 +23,8 @@ public class OpenCommand implements SubCommand {
             return true;
         }
         BuoyyEcon.getGUIManager()
-                .openGUI(player, new StorageGUI(BuoyyEcon.getEconomy(), player, type));
+                .openGUI(player, new StorageGUI(BuoyyEcon.getEconomy(),
+                        player, type));
         return true;
     }
 
