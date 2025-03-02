@@ -9,10 +9,11 @@ import com.github.buoyy.api.util.Messenger;
 
 import com.github.buoyy.buoyyecon.commands.transaction.DepositCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.PayCommand;
+import com.github.buoyy.buoyyecon.commands.transaction.RequestCommand;
 import com.github.buoyy.buoyyecon.commands.transaction.WithdrawCommand;
 import com.github.buoyy.buoyyecon.commands.util.*;
 
-import com.github.buoyy.buoyyecon.gui.EconOpenerGUI;
+import com.github.buoyy.buoyyecon.gui.MainMenuGUI;
 
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
 import com.github.buoyy.buoyyecon.listeners.GUIListener;
@@ -87,14 +88,16 @@ public final class BuoyyEcon extends JavaPlugin {
         command.registerSubCommand("withdraw", new WithdrawCommand(type));
         command.registerSubCommand("deposit", new DepositCommand(type));
         command.registerSubCommand("pay", new PayCommand(type));
+        command.registerSubCommand("request", new RequestCommand(type));
         Objects.requireNonNull(getCommand(name)).setExecutor(command);
         Objects.requireNonNull(getCommand(name)).setTabCompleter(command);
     }
     private void registerEconCommand() {
         BaseCommand econ = new BaseCommand("/econ <view/reload>",
-                player -> GUIManager.openGUI(player, new EconOpenerGUI()));
+                player -> GUIManager.openGUI(player, new MainMenuGUI()));
         econ.registerSubCommand("view", new FullViewCommand());
         econ.registerSubCommand("reload", new ReloadCommand());
+        econ.registerSubCommand("requests", new RequestsCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(econ);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(econ);
     }

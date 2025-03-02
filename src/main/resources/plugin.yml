@@ -9,7 +9,8 @@ commands:
   econ:
     description: One of the main commands. Use to open GUI or use arguments.
     usage: /econ <reload/view>
-  dia:
+  diamond:
+    aliases: [dia, diamonds]
     description: For all things diamond related.
     usage: /dia <withdraw/deposit/set/open/pay>
   gold:

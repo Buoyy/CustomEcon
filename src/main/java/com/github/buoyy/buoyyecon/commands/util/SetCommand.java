@@ -41,8 +41,7 @@ public class SetCommand implements SubCommand {
                 ? (OfflinePlayer) sender
                 : Bukkit.getOfflinePlayer(args[1]);
         if (econ.hasAccount(target)) {
-            // Float because we cant check if it is NaN.
-            int amount;
+            final int amount;
             try {
                 amount = Integer.parseInt(args[2]);
             } catch (NumberFormatException e) {
@@ -51,7 +50,7 @@ public class SetCommand implements SubCommand {
             }
             Transaction set = ((econ.has(target, type, amount)) ?
                     econ.subtract(target, type, econ.getBalance(target, type)-amount) :
-                    econ.add(target, type, econ.getBalance(target, type)+amount));
+                    econ.add(target, type, amount-econ.getBalance(target, type)));
             if (!set.isSuccessful()) {
                 sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + set.message);
             } else {

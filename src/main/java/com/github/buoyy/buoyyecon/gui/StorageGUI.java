@@ -21,6 +21,7 @@ public class StorageGUI extends InventoryHandler {
         this.econ = econ;
         this.holder = holder;
         this.type = type;
+        this.inv = this.createInv();
     }
     public void populate() {
         int amount = econ.getBalance(holder, type);

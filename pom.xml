@@ -72,7 +72,6 @@
             <groupId>com.github.buoyy</groupId>
             <artifactId>SpigotUtilAPI</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
