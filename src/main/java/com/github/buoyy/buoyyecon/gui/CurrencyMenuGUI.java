@@ -2,27 +2,18 @@ package com.github.buoyy.buoyyecon.gui;
 
 import com.github.buoyy.api.economy.CurrencyType;
 import com.github.buoyy.api.gui.InvButton;
-import com.github.buoyy.api.gui.InventoryGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.UUID;
-
-public class CurrencyMenuGUI extends InventoryGUI {
-    private final CurrencyType type;
-    public CurrencyMenuGUI(CurrencyType type) {
-        this.type = type;
-        this.inv = this.createInv();
-    }
-    @Override
-    public Inventory createInv() {
-        return Bukkit.createInventory(null, 9, ChatColor.GREEN+type.getNamePlural()+" Menu");
+public class CurrencyMenuGUI extends EconInvGUI {
+    public CurrencyMenuGUI(OfflinePlayer owningPlayer, CurrencyType type) {
+        super(owningPlayer, type);
+        this.inv = Bukkit.createInventory(null, 9, ChatColor.GREEN+type.getNamePlural()+" Menu");
     }
     @Override
     public void decorate() {
@@ -30,10 +21,11 @@ public class CurrencyMenuGUI extends InventoryGUI {
                 .setIcon(type == CurrencyType.DIAMOND ? Material.DIAMOND_BLOCK : Material.GOLD_BLOCK)
                 .setName("Open "+type.getNamePlural()+" storage")
                 .setOnClick(e->
-                        ((Player)e.getWhoClicked()).performCommand(type.getNameSingular()+" open"))
+                        ((Player)owningPlayer).performCommand(type.getNameSingular()+" open"))
                 .build();
         InvButton yourHead = InvButton.Builder.newBuilder()
-                .setIcon(getPlayerHead(Bukkit.getOfflinePlayer(UUID.fromString("381b20c8-3679-468c-890d-093b8c2ad6e7"))))
+                .setIcon(getPlayerHead(Bukkit.getOfflinePlayer(this.owningPlayer.getUniqueId())))
+                .setName("Your management")
                 .build();
         this.addButton(5, openStorage);
         this.addButton(3, yourHead);

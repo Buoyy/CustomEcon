@@ -15,6 +15,9 @@ import com.github.buoyy.buoyyecon.commands.util.*;
 
 import com.github.buoyy.buoyyecon.gui.MainMenuGUI;
 
+import com.github.buoyy.buoyyecon.input.ChatInputManager;
+import com.github.buoyy.buoyyecon.event.ChatInputCaller;
+import com.github.buoyy.buoyyecon.listeners.ChatInputListener;
 import com.github.buoyy.buoyyecon.listeners.PlayerListener;
 import com.github.buoyy.buoyyecon.listeners.GUIListener;
 
@@ -30,10 +33,12 @@ import java.util.UUID;
 
 public final class BuoyyEcon extends JavaPlugin {
 
+    private static BuoyyEcon instance;
     private static Messenger messenger;
     private static YAML dataFile;
     private static Economy econ;
     private static GUIManager GUIManager;
+    private static ChatInputManager chatInputManager;
 
     // Enable and load all needed data.
     @Override
@@ -63,10 +68,12 @@ public final class BuoyyEcon extends JavaPlugin {
 
     // This is for initiating all needed objects excluding main command
     private void initiateObjects() {
+        instance = this;
         messenger = new Messenger();
         dataFile = new YAML(this.getName(), "accounts", messenger);
         econ = new Economy(dataFile, messenger);
         GUIManager = new GUIManager();
+        chatInputManager = new ChatInputManager();
     }
 
     private void loadAccounts() {
@@ -78,6 +85,8 @@ public final class BuoyyEcon extends JavaPlugin {
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatInputCaller(), this);
+        getServer().getPluginManager().registerEvents(new ChatInputListener(), this);
     }
     private void registerTypedCommand(String name, String usage, CurrencyType type) {
         BaseCommand command = new BaseCommand(usage,
@@ -94,9 +103,10 @@ public final class BuoyyEcon extends JavaPlugin {
     }
     private void registerEconCommand() {
         BaseCommand econ = new BaseCommand("/econ <view/reload>",
-                player -> GUIManager.openGUI(player, new MainMenuGUI()));
+                player -> GUIManager.openGUI(player, new MainMenuGUI(player)));
         econ.registerSubCommand("view", new FullViewCommand());
         econ.registerSubCommand("reload", new ReloadCommand());
+        econ.registerSubCommand("input", new InputCommand());
         econ.registerSubCommand("requests", new RequestsCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(econ);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(econ);
@@ -105,9 +115,11 @@ public final class BuoyyEcon extends JavaPlugin {
         getServer().getServicesManager().register(Economy.class,
                 econ, this, ServicePriority.Highest);
     }
-    // You guessed it.
-    public static Economy getEconomy() { return econ; }
-    public static GUIManager getGUIManager() { return GUIManager; }
-    public static Messenger getMessenger() { return messenger; }
-    public static YAML getDataFile() { return dataFile; }
+    public static BuoyyEcon getInstance()    { return instance;      }
+    public static Economy getEconomy()       { return econ;          }
+    public static GUIManager getGUIManager() { return GUIManager;    }
+    public static Messenger getMessenger()   { return messenger;     }
+    public static YAML getDataFile()         { return dataFile;      }
+    public static ChatInputManager getChatInputManager()
+                                             { return chatInputManager; }
 }

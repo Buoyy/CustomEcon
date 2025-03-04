@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 @SuppressWarnings("unused")
@@ -21,19 +20,14 @@ public class StorageGUI extends InventoryHandler {
         this.econ = econ;
         this.holder = holder;
         this.type = type;
-        this.inv = this.createInv();
+        this.inv = Bukkit.createInventory(null, 54,
+                ChatColor.AQUA+"Your "+type.getNamePlural()+" storage");
     }
     public void populate() {
         int amount = econ.getBalance(holder, type);
         if (amount == 0) return;
         ItemStack toAdd = new ItemStack(type.getMaterial(), amount);
         this.getInv().addItem(toAdd);
-    }
-
-    @Override
-    public Inventory createInv() {
-        return Bukkit.createInventory(null, 54,
-                ChatColor.AQUA+"Your "+type.getNamePlural()+" storage");
     }
 
     @Override
