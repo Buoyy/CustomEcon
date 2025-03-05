@@ -83,16 +83,16 @@ public final class BuoyyEcon extends JavaPlugin {
         }
     }
     private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new ChatInputCaller(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
-        getServer().getPluginManager().registerEvents(new ChatInputCaller(), this);
         getServer().getPluginManager().registerEvents(new ChatInputListener(), this);
     }
     private void registerTypedCommand(String name, String usage, CurrencyType type) {
         BaseCommand command = new BaseCommand(usage,
                 player -> player.sendMessage(ChatColor.GREEN+"Usage: "+usage));
         command.registerSubCommand("open", new OpenCommand(type));
-        command.registerSubCommand("set", new SetCommand(type));
+        // command.registerSubCommand("set", new SetCommand(type));
         command.registerSubCommand("view", new ViewCommand(type));
         command.registerSubCommand("withdraw", new WithdrawCommand(type));
         command.registerSubCommand("deposit", new DepositCommand(type));
@@ -104,9 +104,9 @@ public final class BuoyyEcon extends JavaPlugin {
     private void registerEconCommand() {
         BaseCommand econ = new BaseCommand("/econ <view/reload>",
                 player -> GUIManager.openGUI(player, new MainMenuGUI(player)));
+        econ.registerSubCommand("help", new HelpCommand());
         econ.registerSubCommand("view", new FullViewCommand());
-        econ.registerSubCommand("reload", new ReloadCommand());
-        econ.registerSubCommand("input", new InputCommand());
+        // econ.registerSubCommand("reload", new ReloadCommand());
         econ.registerSubCommand("requests", new RequestsCommand());
         Objects.requireNonNull(getCommand("econ")).setExecutor(econ);
         Objects.requireNonNull(getCommand("econ")).setTabCompleter(econ);

@@ -38,10 +38,12 @@ public class PayCommand implements SubCommand {
             return true;
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+        PaymentRequest request = econ.getRequest(target, player, type);
         if (econ.hasAccount(target)) {
             final int amount;
             try {
-                amount = Integer.parseInt(args[2]);
+                amount = (request != null && args[2].equals("all")) ?
+                        request.amount : Integer.parseInt(args[2]);
             } catch (NumberFormatException e) {
                 player.sendMessage(ChatColor.RED + "That's not a number.");
                 return true;
@@ -73,6 +75,7 @@ public class PayCommand implements SubCommand {
                         ChatColor.DARK_RED + removal.message);
                 return true;
             }
+            // We give the remaining currency back to player in case of limited storage space
             int notTransferred = targetBalance + amount - 3456;
             if (notTransferred > 0) {
                 if (target.isOnline()) {
@@ -89,15 +92,21 @@ public class PayCommand implements SubCommand {
                     econ.add(player, type, notTransferred); //We are sure that there won't be any failures in this transaction. No need to cache it.
                 }
             }
-            PaymentRequest request = econ.getRequest(target, player, type);
-            if (request != null && amount >= request.amount) {
-                econ.processRequest(target, player, type);
-                player.sendMessage(ChatColor.GREEN+"You cleared the request of "+ChatColor.GOLD
+            // Back to request processing
+            final int remainingAmount;
+            if (request != null) {
+                remainingAmount  = request.amount - amount;
+                econ.processRequest(target, player, type, amount);
+                player.sendMessage(ChatColor.GREEN+"You processed the request of "+ChatColor.GOLD
                         +econ.format(request.amount, type)+ChatColor.GREEN+" from player "+ChatColor.AQUA+target.getName());
+                player.sendMessage(ChatColor.GREEN+"You are now required to pay "
+                        +ChatColor.GOLD+((remainingAmount<=0)?econ.format(0, type)
+                        :econ.format(remainingAmount, type))+ChatColor.GREEN+" to them.");
                 if (target.isOnline()) {
                     ((Player)target).sendMessage(ChatColor.GREEN+"Your request of "+ChatColor.GOLD
                     +econ.format(request.amount, type)+ChatColor.GREEN+" to player "+ChatColor.AQUA+player.getName()
-                    +ChatColor.GREEN+" has been cleared.");
+                    +ChatColor.GREEN+" has been processed with "+ChatColor.GOLD+((remainingAmount<=0)?econ.format(0, type)
+                            :econ.format(remainingAmount, type))+ChatColor.GREEN+" remaining.");
                 }
             }
         } else
